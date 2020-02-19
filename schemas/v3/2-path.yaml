@@ -1,0 +1,54 @@
+openapi: 3.0.0
+info:
+  title: Test API 2
+  version: 1.0.0
+paths:
+  /echo:
+    post:
+      description: Echo input back
+      operationId: echo
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                input:
+                  type: string
+              required:
+                - input
+      responses:
+        "200":
+          description: Echoed input
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  output:
+                    type: string
+                required: 
+                  - output
+        default:
+          description: Default error response with error object
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: object
+                    properties:
+                      name:
+                        type: string
+                      message:
+                        type: string
+                      data:
+                        type: array
+                        items:
+                          type: object
+                    required:
+                      - name
+                      - message
+                required:
+                  - error

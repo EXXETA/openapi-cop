@@ -1,0 +1,43 @@
+openapi: 3.0.1
+info:
+  version: 1.0.0
+  title: Test API 3 - Parameters
+servers:
+- url: https://petstore.com
+paths:
+  "/pets/{category}":
+    post:
+      description: List all pets in a category
+      operationId: addPet
+      parameters:
+      - in: path
+        name: category
+        required: true
+        description: Pet category
+        schema:
+          type: string
+          default: all
+      - in: query
+        name: limit
+        description: Amt returned
+        schema:
+          type: integer
+          format: int32
+      responses:
+        '200':
+          description: Successful response
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: ['search']
+              properties:
+                search:
+                  type: string
+                  description: Search pet details
+                strict:
+                  type: boolean
+                  description: Exact matches?
+              additionalProperties: true

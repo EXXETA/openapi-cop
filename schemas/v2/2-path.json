@@ -1,0 +1,82 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "Test API 2",
+    "version": "1.0.0"
+  },
+  "paths": {
+    "/echo": {
+      "post": {
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "schema": {
+              "properties": {
+                "input": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "input"
+              ],
+              "type": "object"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Echoed input",
+            "schema": {
+              "properties": {
+                "output": {
+                  "type": "string"
+                }
+              },
+              "type": "object"
+            }
+          },
+          "default": {
+            "description": "Default error response with error object",
+            "schema": {
+              "properties": {
+                "error": {
+                  "properties": {
+                    "data": {
+                      "items": {
+                        "type": "object"
+                      },
+                      "type": "array"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "name": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "name",
+                    "message"
+                  ],
+                  "type": "object"
+                }
+              },
+              "required": [
+                "error"
+              ],
+              "type": "object"
+            }
+          }
+        },
+        "description": "Echo input back"
+      }
+    }
+  }
+}

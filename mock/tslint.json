@@ -1,0 +1,10 @@
+{
+  "extends": "gts/tslint.json",
+  "linterOptions": {
+    "exclude": ["node_modules/**"]
+  },
+  "rules": {
+    "no-any": false,
+    "quotemark": [true, "single", "avoid-escape", "avoid-template"]
+  }
+}

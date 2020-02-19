@@ -1,0 +1,8 @@
+node_modules
+proxy/node_modules
+proxy/lib/openapi-backend/node_modules
+mock/node_modules
+proxy/build/
+mock/build/
+.idea/
+.vscode/settings.json

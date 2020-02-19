@@ -1,0 +1,33 @@
+{
+  "name": "openapi-cop",
+  "version": "0.0.1",
+  "description": "Api monitoring and validation tools",
+  "author": "Alexis Luengas",
+  "repository": {
+    "type": "git",
+    "url": "github:LexLuengas/EXXETA/openapi-cop"
+  },
+  "license": "MIT",
+  "bin": {
+    "openapi-cop-proxy": "./proxy/build/src/cli.js"
+  },
+  "keywords": [
+    "openapi",
+    "swagger",
+    "api",
+    "monitoring",
+    "validation",
+    "validator",
+    "proxy"
+  ],
+  "scripts": {
+    "install-all": "cd mock && npm install --depth 0 && cd ../proxy && npm install --depth 0 && echo ''",
+    "clean-install": "npm run mock:clean-install && npm run mock:compile && npm run proxy:clean-install",
+    "mock:clean-install": "cd mock && npm install --depth 0 && npm run clean",
+    "proxy:clean-install": "cd proxy && npm install --depth 0 && npm run clean",
+    "compile": "npm run mock:compile && npm run proxy:compile",
+    "mock:compile": "cd mock && npm run compile",
+    "proxy:compile": "cd proxy && npm run compile",
+    "test": "bash ./docker/run-docker-test.bash"
+  }
+}

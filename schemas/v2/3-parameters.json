@@ -1,0 +1,61 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "Test API 3 - Parameters",
+    "version": "1.0.0"
+  },
+  "host": "petstore.com",
+  "basePath": "/",
+  "schemes": [
+    "https"
+  ],
+  "paths": {
+    "/pets/{category}": {
+      "post": {
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "default": "all",
+            "description": "Pet category",
+            "in": "path",
+            "name": "category",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "description": "Amt returned",
+            "format": "int32",
+            "in": "query",
+            "name": "limit",
+            "type": "integer"
+          },
+          {
+            "in": "body",
+            "name": "body",
+            "schema": {
+              "properties": {
+                "search": {
+                  "description": "Search pet details",
+                  "type": "string"
+                },
+                "strict": {
+                  "description": "Exact matches?",
+                  "type": "boolean"
+                }
+              },
+              "type": "object"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response"
+          }
+        },
+        "description": "List all pets in a category"
+      }
+    }
+  }
+}

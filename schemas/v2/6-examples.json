@@ -1,0 +1,121 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "Test API 6",
+    "version": "1.0.0"
+  },
+  "paths": {
+    "/pets": {
+      "get": {
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "ok",
+            "schema": {
+              "items": {
+                "properties": {
+                  "id": {
+                    "minimum": 1,
+                    "type": "integer"
+                  },
+                  "name": {
+                    "example": "Odie",
+                    "type": "string"
+                  }
+                },
+                "type": "object"
+              },
+              "type": "array"
+            }
+          }
+        },
+        "operationId": "getPets"
+      },
+      "post": {
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "description": "Pet object to create",
+            "in": "body",
+            "name": "body",
+            "schema": {
+              "properties": {
+                "search": {
+                  "description": "Search pet details",
+                  "type": "string"
+                },
+                "strict": {
+                  "description": "Exact matches?",
+                  "type": "boolean"
+                }
+              },
+              "required": [
+                "search"
+              ],
+              "type": "object"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "ok"
+          }
+        },
+        "operationId": "createPet"
+      }
+    },
+    "/pets/{id}": {
+      "parameters": [
+        {
+          "in": "path",
+          "name": "id",
+          "required": true,
+          "type": "integer"
+        }
+      ],
+      "get": {
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "ok"
+          }
+        },
+        "operationId": "getPetById"
+      }
+    }
+  },
+  "x-components": {
+    "responses": {
+      "ListPetsRes": {
+        "description": "ok",
+        "schema": {
+          "items": {
+            "properties": {
+              "id": {
+                "minimum": 1,
+                "type": "integer"
+              },
+              "name": {
+                "example": "Odie",
+                "type": "string"
+              }
+            },
+            "type": "object"
+          },
+          "type": "array"
+        }
+      },
+      "PetRes": {
+        "description": "ok"
+      }
+    }
+  }
+}

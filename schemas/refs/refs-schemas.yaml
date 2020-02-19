@@ -1,0 +1,19 @@
+Error:
+  type: object
+  properties:
+    error:
+      type: object
+      properties:
+        name:
+          type: string
+        message:
+          type: string
+        data:
+          type: array
+          items:
+            type: object
+      required:
+        - name
+        - message
+  required:
+    - error
