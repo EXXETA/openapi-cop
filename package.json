@@ -15,11 +15,10 @@
   "keywords": [
     "openapi",
     "swagger",
-    "api",
+    "proxy",
     "monitoring",
     "validation",
-    "validator",
-    "proxy"
+    "validator"
   ],
   "scripts": {
     "install-all": "cd mock && npm install --depth 0 && cd ../proxy && npm install --depth 0 && echo ''",

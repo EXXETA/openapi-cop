@@ -7,6 +7,14 @@
     "type": "git",
     "url": "github:EXXETA/openapi-cop"
   },
+  "keywords": [
+    "openapi",
+    "swagger",
+    "proxy",
+    "monitoring",
+    "validation",
+    "validator"
+  ],
   "license": "MIT",
   "main": "./build/src/app",
   "bin": "./build/src/cli.js",
