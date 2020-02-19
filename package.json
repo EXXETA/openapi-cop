@@ -1,7 +1,7 @@
 {
   "name": "openapi-cop-project",
-  "version": "0.0.1",
-  "description": "Api monitoring and validation tools",
+  "version": "0.0.2",
+  "description": "OpenAPI compliance monitoring",
   "author": "Alexis Luengas",
   "private": true,
   "repository": {

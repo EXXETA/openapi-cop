@@ -1,7 +1,7 @@
 {
   "name": "openapi-cop",
-  "version": "0.0.1",
-  "description": "Monitor request and response conformance with an OpenAPI document",
+  "version": "0.0.2",
+  "description": "Monitor compliance of requests and responses with an OpenAPI document",
   "author": "Alexis Luengas",
   "repository": {
     "type": "git",
