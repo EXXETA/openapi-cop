@@ -1,6 +1,6 @@
 # openapi-cop
 
-Validate responses and requests against an OpenAPI definition.
+Monitor compliance of requests and responses with an OpenAPI document.
 
 The developer typically has no control over the backend environment and wants to run the proxy locally to monitor API requests and responses. This proxy can be plugged into a CI or used during local development.
 
