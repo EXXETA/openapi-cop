@@ -1,6 +1,6 @@
 {
   "name": "openapi-cop",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Api monitoring and validation tools",
   "author": "Alexis Luengas",
   "repository": {

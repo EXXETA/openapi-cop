@@ -1,6 +1,6 @@
 {
   "name": "openapi-cop-proxy",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Monitor request and response conformance with an OpenAPI document",
   "author": "Alexis Luengas",
   "repository": {
