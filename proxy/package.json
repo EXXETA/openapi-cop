@@ -5,7 +5,7 @@
   "author": "Alexis Luengas",
   "repository": {
     "type": "git",
-    "url": "github:LexLuengas/EXXETA/openapi-cop"
+    "url": "github:EXXETA/openapi-cop"
   },
   "license": "MIT",
   "main": "./build/src/app",
