@@ -3,7 +3,8 @@
   "version": "0.0.1",
   "description": "Mock server for use together with the openapi-cop proxy server",
   "license": "MIT",
-  "author": "Alexis Luengas <alexis.luengas.ruiz@exxeta.com>",
+  "author": "Alexis Luengas",
+  "private": true,
   "main": "./build/src/app",
   "bin": "./build/src/cli.js",
   "scripts": {

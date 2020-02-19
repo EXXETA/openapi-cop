@@ -1,15 +1,16 @@
 {
-  "name": "openapi-cop",
-  "version": "0.0.2",
+  "name": "openapi-cop-project",
+  "version": "0.0.1",
   "description": "Api monitoring and validation tools",
   "author": "Alexis Luengas",
+  "private": true,
   "repository": {
     "type": "git",
     "url": "github:EXXETA/openapi-cop"
   },
   "license": "MIT",
   "bin": {
-    "openapi-cop-proxy": "./proxy/build/src/cli.js"
+    "openapi-cop": "./proxy/build/src/cli.js"
   },
   "keywords": [
     "openapi",

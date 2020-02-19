@@ -40,7 +40,7 @@ package:
     when: on_success
     expire_in: 1 week
     paths:
-      - proxy/openapi-cop-proxy-*.tgz
+      - proxy/openapi-cop.tgz
 
 # publish:  
 #   stage: deploy

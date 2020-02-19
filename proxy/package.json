@@ -1,6 +1,6 @@
 {
-  "name": "openapi-cop-proxy",
-  "version": "0.0.2",
+  "name": "openapi-cop",
+  "version": "0.0.1",
   "description": "Monitor request and response conformance with an OpenAPI document",
   "author": "Alexis Luengas",
   "repository": {
@@ -24,7 +24,7 @@
     "test:deps": "npx depcheck",
     "posttest": "npm run check",
     "prepare": "npm run compile",
-    "package": "npx yarn pack --filename openapi-cop-proxy.tgz"
+    "package": "npx yarn pack --filename openapi-cop.tgz"
   },
   "dependencies": {
     "ajv": "^6.10.2",

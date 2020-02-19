@@ -1,4 +1,4 @@
-# openapi-cop-proxy
+# openapi-cop
 
 Validate responses and requests against an OpenAPI definition.
 
@@ -6,14 +6,14 @@ The developer typically has no control over the backend environment and wants to
 
 ## Installation
 
-Do `npm install -g openapi-cop-proxy`, or `npm install openapi-cop-proxy` to install locally.
+Do `npm install -g openapi-cop`, or `npm install openapi-cop` to install locally.
 
 ## CLI Usage
 
-The *openapi-cop-proxy* node package installs itself as an executable linked as `openapi-cop-proxy`. Run the command with the `--help` flag to get information about the CLI:
+The *openapi-cop* node package installs itself as an executable linked as `openapi-cop`. Run the command with the `--help` flag to get information about the CLI:
 
 ```txt
-Usage: openapi-cop-proxy [options]
+Usage: openapi-cop [options]
 
 Options:
   -s, --file <file>                       path to the OpenAPI definition file
@@ -173,7 +173,7 @@ When the `--silent` is provided, the proxy will forward the server's response bo
 To run the proxy programatically use `runProxy`, which returns a `Promise<http.Server>`:
 
 ```ts
-import {runProxy} from 'openapi-cop-proxy';
+import {runProxy} from 'openapi-cop';
 
 const server = await runProxy({
   port: 8888,

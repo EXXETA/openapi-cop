@@ -11,7 +11,7 @@ import chalk from 'chalk';
 import { runProxy } from './app';
 
 // Rename for consistent display of package name in help output
-process.argv[1] = path.join(process.argv[1], 'openapi-cop-proxy');
+process.argv[1] = path.join(process.argv[1], 'openapi-cop');
 
 program //
   .option('-s, --file <file>', 'path to the OpenAPI definition file')
