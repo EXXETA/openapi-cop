@@ -3,6 +3,7 @@
 cd /data
 
 echo "Cleaning, then installing..." 
-npm run clean-install
+(cd mock && npm install --depth 0 && npm run clean)
+npm install --depth 0 && npm run clean
 echo "Running tests..."
-cd proxy && DEBUG=openapi-cop:* npm test
+DEBUG=openapi-cop:* npm test

@@ -6,3 +6,4 @@ proxy/build/
 mock/build/
 .idea/
 .vscode/settings.json
+.markdownlint.json

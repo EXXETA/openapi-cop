@@ -1,18 +1,14 @@
 # openapi-cop
 
-_openapi-cop_ is a set of proxy tools to validate responses and requests against an OpenAPI definition. Currently, only the proxy server integration is available.
+Monitor compliance of requests and responses with an OpenAPI document.
 
-## Proxy server integration
+The developer typically has no control over the backend environment and wants to run the proxy locally to monitor API requests and responses. This proxy can be plugged into a CI or used during local development.
 
-The developer typically has no control over the backend environment and wants to run the proxy locally to monitor API requests and responses. The proxy can be plugged into a CI or used during local development.
-
-### Installation
+## Installation
 
 Do `npm install -g openapi-cop`, or `npm install openapi-cop` to install locally.
 
-You can of course also install the package provided in the release with `npm install ./proxy/openapi-cop.tgz`.
-
-### CLI Usage
+## CLI Usage
 
 The *openapi-cop* node package installs itself as an executable linked as `openapi-cop`. Run the command with the `--help` flag to get information about the CLI:
 
