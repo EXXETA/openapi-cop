@@ -8,13 +8,12 @@
     "rootDir": ".",
     "outDir": "build",
     "strict": true,
-    "resolveJsonModule": true
+    "resolveJsonModule": true,
+    "typeRoots": ["./node_modules/@types"],
   },
   "declaration": true,
   "include": [
     "src/*.ts",
-    "src/**/*.ts",
     "test/*.ts",
-    "test/**/*.ts"
   ]
 }
