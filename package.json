@@ -1,6 +1,6 @@
 {
   "name": "openapi-cop",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "OpenAPI compliance monitoring",
   "author": "Alexis Luengas",
   "repository": {
