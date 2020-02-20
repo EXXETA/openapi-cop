@@ -15,6 +15,9 @@
     "validation",
     "validator"
   ],
+  "files": [
+    "build/"
+  ],
   "license": "MIT",
   "main": "./build/src/app",
   "bin": "./build/src/cli.js",
