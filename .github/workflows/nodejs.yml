@@ -20,6 +20,9 @@ jobs:
     - name: Install dependencies (mock)
       working-directory: ./mock
       run: npm install
+    - name: Build mock
+      working-directory: ./mock
+      run: npm run compile
     - name: Install dependencies (proxy)
       run: npm install
     - run: npm test
