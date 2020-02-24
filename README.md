@@ -2,9 +2,9 @@
 
 ![Node.js CI](https://github.com/EXXETA/openapi-cop/workflows/Node.js%20CI/badge.svg)
 
-Monitor compliance of requests and responses with an OpenAPI document.
+A proxy that validates responses and requests against an OpenAPI document.
 
-The developer typically has no control over the backend environment and wants to run the proxy locally to monitor API requests and responses. This proxy can be plugged into a CI or used during local development.
+The idea is to place the proxy between a client (e.g. a frontend app) and a web server to catch invalid requests or responses during development. Use this proxy locally or set it up in your development server. Although the proxy can be configured to not modify response payloads, it is discouraged to use it in production environments.
 
 ## Installation
 
