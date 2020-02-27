@@ -1,6 +1,6 @@
 <h1 align="center">openapi-cop</h1>
 <p align="center">
-  <strong>OpenAPI <b>Co</b>mpliance <b>P</b>roxy that validates requests and responses against an OpenAPI document</strong>
+  OpenAPI <b>Co</b>mpliance <b>P</b>roxy that validates requests and responses against an OpenAPI document
 </p>
 
 <p align="center">
