@@ -117,7 +117,7 @@ async function spawnProxyServer(proxyPort, targetPort, apiDocFile, options = {})
         '--file',
         apiDocFile,
         '--verbose',
-    ], Object.assign({ cwd: __dirname, stdio: 'pipe', detached: false }, options));
+    ], { cwd: __dirname, stdio: 'pipe', detached: false, ...options });
     await waitOn({ resources: [`tcp:localhost:${proxyPort}`] });
     return cp;
 }
@@ -137,7 +137,12 @@ async function spawnMockServer(port, apiDocFile, options = {}) {
         '--file',
         apiDocFile,
         '--verbose',
-    ], Object.assign({ cwd: config_1.MOCK_SERVER_DIR, stdio: debug.enabled('openapi-cop:mock') ? 'inherit' : 'ignore', detached: false }, options));
+    ], {
+        cwd: config_1.MOCK_SERVER_DIR,
+        stdio: debug.enabled('openapi-cop:mock') ? 'inherit' : 'ignore',
+        detached: false,
+        ...options,
+    });
     await waitOn({ resources: [`tcp:localhost:${port}`] });
     return cp;
 }

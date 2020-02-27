@@ -77,37 +77,42 @@ describe('integration.test.js', function () {
                 },
             });
         });
-        it('should return the source request object inside the response header', async function () {
+        it('should return the source request object inside the response header', async () => {
             console.log('Starting proxy server...');
-            const server = await app_1.runProxy({
-                port: config_1.PROXY_PORT,
-                host: 'localhost',
-                targetUrl: `http://localhost:${config_1.TARGET_SERVER_PORT}`,
-                apiDocFile: config_1.DEFAULT_OPENAPI_FILE,
-                defaultForbidAdditionalProperties: false,
-            });
-            const originalRequest = {
-                method: 'GET',
-                url: '/pets',
-                data: JSON.stringify({ search: 'something' }),
-            };
-            const proxyResponse = await clients.proxy.request(originalRequest);
-            const openapiCopRequest = JSON.parse(proxyResponse.headers['openapi-cop-source-request']);
-            chai_1.assert.deepStrictEqual(openapiCopRequest, {
-                method: originalRequest.method,
-                path: originalRequest.url,
-                body: JSON.parse(originalRequest.data),
-                query: {},
-                headers: {
-                    accept: 'application/json, text/plain, */*',
-                    connection: 'close',
-                    'content-length': '22',
-                    'content-type': 'application/json',
-                    host: 'localhost:8888',
-                    'user-agent': 'axios/0.18.1',
-                },
-            });
-            await util_1.closeServer(server);
+            try {
+                const server = await app_1.runProxy({
+                    port: config_1.PROXY_PORT,
+                    host: 'localhost',
+                    targetUrl: `http://localhost:${config_1.TARGET_SERVER_PORT}`,
+                    apiDocFile: config_1.DEFAULT_OPENAPI_FILE,
+                    defaultForbidAdditionalProperties: false,
+                });
+                const originalRequest = {
+                    method: 'GET',
+                    url: '/pets',
+                    data: JSON.stringify({ search: 'something' }),
+                };
+                const proxyResponse = await clients.proxy.request(originalRequest);
+                const openapiCopRequest = JSON.parse(proxyResponse.headers['openapi-cop-source-request']);
+                chai_1.assert.deepStrictEqual(openapiCopRequest, {
+                    method: originalRequest.method,
+                    path: originalRequest.url,
+                    body: JSON.parse(originalRequest.data),
+                    query: {},
+                    headers: {
+                        accept: 'application/json, text/plain, */*',
+                        connection: 'close',
+                        'content-length': '22',
+                        'content-type': 'application/json',
+                        host: 'localhost:8888',
+                        'user-agent': 'axios/0.19.2',
+                    },
+                });
+                await util_1.closeServer(server);
+            }
+            catch (e) {
+                console.log(e, "ERR");
+            }
         });
         testing_1.testRequestForEachFile({
             testTitle: 'should respond with validation headers that are ValidationResult',

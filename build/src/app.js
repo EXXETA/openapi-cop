@@ -18,7 +18,10 @@ const defaults = {
  * Builds a new express app instance, and attaches all necessary middleware.
  */
 async function buildApp(options) {
-    const { targetUrl, apiDocFile, defaultForbidAdditionalProperties, silent } = Object.assign(Object.assign({}, defaults), options);
+    const { targetUrl, apiDocFile, defaultForbidAdditionalProperties, silent } = {
+        ...defaults,
+        ...options,
+    };
     const app = express();
     const apiDocRaw = util_1.readFileSync(apiDocFile);
     console.log(chalk_1.default.blue('Validating against ' +
