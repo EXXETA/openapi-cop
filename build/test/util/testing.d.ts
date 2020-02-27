@@ -51,13 +51,13 @@ export declare function spawnProxyServer(proxyPort: number, targetPort: number, 
  *
  * The `options` can be used to override the `child_process.spawn` options.
  */
-export declare function spawnMockServer(port: number, apiDocFile: string, options?: any): Promise<ChildProcess>;
+export declare function spawnMockServer(port: number, apiDocFile: string, options?: any): Promise<import("child_process").ChildProcessWithoutNullStreams>;
 /**
  * Convenience function to spawn a proxy server along a mock server.
  */
 export declare function spawnProxyWithMockServer(proxyPort: number, targetPort: number, apiDocFile: string, options?: any): Promise<{
     proxy: ChildProcess;
-    target: ChildProcess;
+    target: import("child_process").ChildProcessWithoutNullStreams;
 }>;
 /**
  * For each OpenAPI file in a given directory, it boots a proxy server, along
