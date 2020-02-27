@@ -8,6 +8,7 @@
   "main": "./build/src/app",
   "bin": "./build/src/cli.js",
   "scripts": {
+    "postinstall": "npm run compile",
     "check": "gts check",
     "clean": "gts clean",
     "compile": "tsc -p .",
