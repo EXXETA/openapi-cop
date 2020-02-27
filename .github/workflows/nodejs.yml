@@ -1,6 +1,18 @@
 name: Node.js CI
 
-on: [push]
+on:
+  push:
+    branches:
+    - master
+    paths-ignore:
+    - 'README.md'
+    - 'mock/README.md'
+  pull_request:
+    branches:
+    - master
+    paths-ignore:
+    - 'README.md'
+    - 'mock/README.md'
 
 jobs:
   build:
