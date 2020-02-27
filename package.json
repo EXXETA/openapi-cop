@@ -21,6 +21,7 @@
   "license": "MIT",
   "main": "./build/src/app",
   "bin": "./build/src/cli.js",
+  "types": "./build/src/app.d.ts",
   "scripts": {
     "check": "gts check",
     "clean": "gts clean",
