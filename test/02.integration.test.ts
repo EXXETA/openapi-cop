@@ -146,7 +146,7 @@ describe('integration.test.js', function() {
           'content-length': '22',
           'content-type': 'application/json',
           host: 'localhost:8888',
-          'user-agent': 'axios/0.18.1',
+          'user-agent': 'axios/0.19.2',
         },
       });
 
