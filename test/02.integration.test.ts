@@ -39,7 +39,7 @@ import {
 } from './config';
 import { ChildProcess } from 'child_process';
 import { Readable } from 'stream';
-import axios from 'axios';
+import axios, { AxiosRequestConfig } from 'axios';
 import { runProxy } from '../src/app';
 import { closeServer } from '../src/util';
 
@@ -123,7 +123,7 @@ describe('integration.test.js', function() {
         defaultForbidAdditionalProperties: false,
       });
 
-      const originalRequest = {
+      const originalRequest: AxiosRequestConfig = {
         method: 'GET',
         url: '/pets',
         data: JSON.stringify({ search: 'something' }),
