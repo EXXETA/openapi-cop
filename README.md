@@ -21,9 +21,6 @@ The idea is to place the proxy between a client (e.g. a frontend app) and a web 
 <br/>
 
 
-* * *
-
-
 ## Installation
 
 Do `npm install -g openapi-cop`, or `npm install openapi-cop` to install locally.
