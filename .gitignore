@@ -7,3 +7,4 @@ mock/build/
 .idea/
 .vscode/settings.json
 .markdownlint.json
+/openapi-cop.tgz

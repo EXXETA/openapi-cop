@@ -1,14 +1,23 @@
-# openapi-cop
+<h1 align="center">openapi-cop</h1>
+<p align="center">
+  OpenAPI <b>Co</b>mpliance <b>P</b>roxy that validates requests and responses against an OpenAPI document
+</p>
 
-![Node.js CI](https://github.com/EXXETA/openapi-cop/workflows/Node.js%20CI/badge.svg)
+<p align="center">
+  <a href="https://github.com/EXXETA/openapi-cop/actions">
+    <img src="https://github.com/EXXETA/openapi-cop/workflows/Node.js%20CI/badge.svg" />
+  </a>
+</p>
 
-A proxy that validates responses and requests against an OpenAPI document.
 
+<p align="justify">
 The idea is to place the proxy between a client (e.g. a frontend app) and a web server to catch invalid requests or responses during development. Use this proxy locally or set it up in your development server. In production environments, use the silent flag to forward unmodified response bodies. In any case, validation headers are set that allow to trace down violations of your OpenAPI definition.
+</p>
 
 <p align="center">
 <img src="https://raw.githubusercontent.com/EXXETA/openapi-cop/master/openapi-cop-diagram.png" alt="Proxy Diagram" height="144" width="571.5">
 </p>
+
 
 ## Installation
 
