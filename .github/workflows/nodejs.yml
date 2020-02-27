@@ -29,3 +29,5 @@ jobs:
       env:
         DEBUG: openapi-cop:*
         CI: true
+    - name: Test dependencies
+      run: npm run test:deps
