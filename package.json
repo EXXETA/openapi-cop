@@ -34,7 +34,7 @@
     "pretest": "npm run compile",
     "test": "mocha --bail --timeout 60000 --exit build/test/*.test.js",
     "test:docker": "bash ./docker/run-docker-test.bash",
-    "test:deps": "npx depcheck",
+    "test:deps": "npx depcheck --ignores=\"@types/*\"",
     "posttest": "npm run check",
     "prepare": "npm run compile",
     "package": "npx yarn pack --filename openapi-cop.tgz"
