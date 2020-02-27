@@ -18,11 +18,6 @@ The idea is to place the proxy between a client (e.g. a frontend app) and a web 
 <img src="https://raw.githubusercontent.com/EXXETA/openapi-cop/master/openapi-cop-diagram.png" alt="Proxy Diagram" height="144" width="571.5">
 </p>
 
-<br/>
-
-
-* * *
-
 
 ## Installation
 
