@@ -8,6 +8,7 @@ on:
     - 'README.md'
     - 'mock/README.md'
   pull_request:
+    types: [closed]
     branches:
     - master
     paths-ignore:
@@ -16,6 +17,9 @@ on:
 
 jobs:
   build:
+    if: >
+      (github.event_name == 'push' && github.ref == 'refs/heads/master') ||
+      (github.event_name == 'pull_request')
 
     runs-on: ubuntu-latest
 
@@ -25,21 +29,36 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
+
     - name: Use Node.js ${{ matrix.node-version }}
       uses: actions/setup-node@v1
       with:
         node-version: ${{ matrix.node-version }}
-    - name: Install dependencies (mock)
+
+    - name: Install dependencies & build (mock)
       working-directory: ./mock
       run: npm install
-    - name: Build mock
-      working-directory: ./mock
-      run: npm run compile
-    - name: Install dependencies (proxy)
+
+    - name: Install dependencies & build (proxy)
       run: npm install
-    - run: npm test
+
+    - name: Test
+      run: npm test
       env:
         DEBUG: openapi-cop:*
         CI: true
-    - name: Test dependencies
+
+    - name: Analyze dependencies
       run: npm run test:deps
+
+    - name: Publish on "Release X.Y.Z" commits
+      if: >
+        startsWith(matrix.node-version, '12.') &&
+        (
+          github.event_name == 'push' || 
+          github.event_name == 'pull_request' && github.event.pull_request.merged
+        )
+      uses: pascalgn/npm-publish-action@51fdb4531e99aac1873764ef7271af448dc42ab4
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        NPM_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}
