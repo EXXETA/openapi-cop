@@ -6,6 +6,7 @@
   "rules": {
     "no-any": false,
     "quotemark": [true, "single", "avoid-escape", "avoid-template"],
-    "no-default-export": false
+    "no-default-export": false,
+    "trailing-comma": [true, {"multiline": "always", "singleline": "never"}]
   }
 }
