@@ -1,6 +1,6 @@
 {
   "name": "openapi-cop-mock-server",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "description": "Mock server for use together with the openapi-cop proxy server",
   "license": "MIT",
   "author": "Alexis Luengas",

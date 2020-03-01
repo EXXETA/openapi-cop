@@ -1,6 +1,6 @@
 {
   "name": "openapi-cop",
-  "version": "0.0.3",
+  "version": "1.0.0",
   "description": "OpenAPI compliance proxy",
   "author": "Alexis Luengas",
   "repository": {
