@@ -23,17 +23,17 @@ The idea is to place the proxy between a client (e.g. a frontend app) and a web 
 
 <details>
   <summary>Can I use this in production?</summary>
-  This tool was originaly meant for development mode. You can use this in production but we cannot give you any promise of security. Also running the jsonschema-validation is very CPU-expensive and you likely do not want to validate in both directions in production because of that overhead.
+  This tool was originally meant for development scenarios. You can use this in production but we cannot give you any security guarantees. Also running the JSON schema validation is quite CPU-expensive and you likely do not want to validate in both directions in production because of that overhead.
 </details>
 
 <details>
   <summary>Do I need this if I already generate my client from the OpenAPI?</summary>
-  When your client- and server-code is generated from the OpenAPi-spec, you might still want to use this proxy. Generated code only ensure the typings of properties but the jsonschema defines much more than that. For example you might define a string property to match a given RegEx and start with the letter "C". This will not be ensured by you generated code, but will be catched by the OpenAPI-cop.
+  In case your client and server code is generated from the OpenAPI spec, you might still want to use this proxy. Generated code does usually only provide typing information, but JSON Schema defines much more than that. For example you might define a string property to match a given RegEx and start with the letter "C". This will not be ensured by your generated code at compile time, but will be caught by openapi-cop.
 </details>
 
 <details>
   <summary>Can I use this with other programming languages?</summary>
-  Yes. This is a proxy and not a middleware. You can use it between whatever HTTP-endpoints that you have in your architecture.
+  Yes. This is a proxy and not a middleware. You can use it between whatever HTTP-endpoints you have in your architecture.
 </details>
 
 
@@ -217,3 +217,6 @@ const server = await runProxy({
   silent: false
 });
 ```
+
+* * *
+
