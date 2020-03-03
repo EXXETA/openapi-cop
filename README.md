@@ -235,5 +235,9 @@ const server = await runProxy({
   <br />
   <img src="./orga/exxeta-logo.png" alt="Exxeta" width="250">
   <br />
+  <br />
   <a href="https://exxeta.team/">Join us now!</a>
 </h2>
+
+<br />
+<br />
