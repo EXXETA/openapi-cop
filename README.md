@@ -19,6 +19,24 @@ The idea is to place the proxy between a client (e.g. a frontend app) and a web 
 </p>
 
 
+## FAQ
+
+<details>
+  <summary>Can I use this in production?</summary>
+  This tool was originally meant for development scenarios. You can use this in production but we cannot give you any security guarantees. Also running the JSON schema validation is quite CPU-expensive and you likely do not want to validate in both directions in production because of that overhead.
+</details>
+
+<details>
+  <summary>Do I need this if I already generate my client from the OpenAPI?</summary>
+  In case your client and server code is generated from the OpenAPI spec, you might still want to use this proxy. Generated code does usually only provide typing information, but JSON Schema defines much more than that. For example you might define a string property to match a given RegEx and start with the letter "C". This will not be ensured by your generated code at compile time, but will be caught by openapi-cop.
+</details>
+
+<details>
+  <summary>Can I use this with other programming languages?</summary>
+  Yes. This is a proxy and not a middleware. You can use it between whatever HTTP-endpoints you have in your architecture.
+</details>
+
+
 ## Installation
 
 Do `npm install -g openapi-cop`, or `npm install openapi-cop` to install locally.
@@ -199,3 +217,6 @@ const server = await runProxy({
   silent: false
 });
 ```
+
+* * *
+
