@@ -219,33 +219,21 @@ const server = await runProxy({
 ```
 
 <br />
-<br />
 
 * * *
 
 <br />
-<br />
-
 
 <h2 align="center">
   Made By
-</h2>
-
-<h2 align="center">
+  <br />
   <a href="https://github.com/LexLuengas">Alexis</a> and <a href="https://github.com/pubkey">Daniel</a>
-</h2>
-
-
-<h2 align="center">
+  <br />
+  <br />
   at
-</h2>
-
-
-<h2 align="center">
+  <br />
+  <br />
   <img src="./orga/exxeta-logo.png" alt="Exxeta" width="250">
-</h2>
-
-
-<h2 align="center">
+  <br />
   <a href="https://exxeta.team/">Join us now!</a>
 </h2>
