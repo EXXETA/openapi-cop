@@ -224,7 +224,7 @@ const server = await runProxy({
 
 <br />
 
-<h2 align="center">
+<h3 align="center">
   Made By
   <br />
   <a href="https://github.com/LexLuengas">Alexis</a> and <a href="https://github.com/pubkey">Daniel</a>
@@ -237,7 +237,7 @@ const server = await runProxy({
   <br />
   <br />
   <a href="https://exxeta.team/">Join us now!</a>
-</h2>
+</h3>
 
 <br />
 <br />
