@@ -9,6 +9,8 @@ jobs:
   npm-publish:
     name: npm-publish
     runs-on: ubuntu-latest
+    
+    if: "startsWith(github.event.head_commit.message, 'Release')"
 
     steps:
     - uses: actions/checkout@master
@@ -18,6 +20,10 @@ jobs:
         node-version: 10.0.0
     - name: Publish on "Release X.Y.Z" commits
       uses: pascalgn/npm-publish-action@51fdb4531e99aac1873764ef7271af448dc42ab4
+      with:
+        tag_name: "v%s"
+        tag_message: "v%s"
+        commit_pattern: "^Release (\\S+)"
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         NPM_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}
