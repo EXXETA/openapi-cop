@@ -50,15 +50,3 @@ jobs:
 
     - name: Analyze dependencies
       run: npm run test:deps
-
-    - name: Publish on "Release X.Y.Z" commits
-      if: >
-        startsWith(matrix.node-version, '12.') &&
-        (
-          github.event_name == 'push' || 
-          github.event_name == 'pull_request' && github.event.pull_request.merged
-        )
-      uses: pascalgn/npm-publish-action@51fdb4531e99aac1873764ef7271af448dc42ab4
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        NPM_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}
