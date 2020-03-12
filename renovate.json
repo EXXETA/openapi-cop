@@ -1,5 +1,12 @@
 {
-  "extends": [
-    "config:base"
-  ]
+  "extends": ["config:base"],
+  "statusCheckVerify": true,
+  "ignoreDeps": [],
+  "automerge": true,
+  "major": {
+    "automerge": true
+  },
+  "ignorePaths": [],
+  "rebaseStalePrs": true,
+  "prHourlyLimit": 4
 }
