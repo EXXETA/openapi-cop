@@ -42,7 +42,7 @@
   "dependencies": {
     "@types/express": "4.17.1",
     "ajv": "6.10.2",
-    "api-spec-converter": "2.7.32",
+    "api-spec-converter": "2.11.0",
     "chalk": "2.4.2",
     "chokidar": "2.1.2",
     "commander": "2.19.0",
