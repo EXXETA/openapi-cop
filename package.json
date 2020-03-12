@@ -82,7 +82,7 @@
     "gts": "1.1.2",
     "mocha": "7.1.0",
     "openapi-cop-mock-server": "file:./mock",
-    "tslint": "5.18.0",
+    "tslint": "6.1.0",
     "typescript": "3.8.3"
   }
 }
