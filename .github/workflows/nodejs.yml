@@ -8,7 +8,6 @@ on:
     - 'README.md'
     - 'mock/README.md'
   pull_request:
-    types: [closed]
     branches:
     - master
     paths-ignore:
