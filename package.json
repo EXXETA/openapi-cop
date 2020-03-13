@@ -45,7 +45,7 @@
     "api-spec-converter": "2.11.0",
     "chalk": "2.4.2",
     "chokidar": "3.3.1",
-    "commander": "2.19.0",
+    "commander": "4.1.1",
     "content-type": "1.0.4",
     "debug": "4.1.1",
     "express": "4.17.1",
