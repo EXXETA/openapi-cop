@@ -4,10 +4,10 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const debugMod = require('debug');
 const debug = debugMod('openapi-cop:proxy');
 debug.log = console.log.bind(console); // output to stdout
+const chalk = require("chalk");
 const chokidar = require("chokidar");
 const program = require("commander");
 const path = require("path");
-const chalk_1 = require("chalk");
 const app_1 = require("./app");
 // Rename for consistent display of package name in help output
 process.argv[1] = path.join(process.argv[1], 'openapi-cop');
@@ -70,13 +70,13 @@ async function start(restart = false) {
     }
     if (!restart) {
         const nodeEnv = process.env.NODE_ENV || 'development';
-        console.log(chalk_1.default.blue('Proxy at   ' +
-            chalk_1.default.bold(`http://${program.host}:${program.port}`) +
+        console.log(chalk.blue('Proxy at   ' +
+            chalk.bold(`http://${program.host}:${program.port}`) +
             ` (${nodeEnv} mode)`));
-        console.log(chalk_1.default.blue('Target at  ' + chalk_1.default.bold(program.target)));
+        console.log(chalk.blue('Target at  ' + chalk.bold(program.target)));
     }
     else {
-        console.log(chalk_1.default.hex('#eeeeee')('Restarted proxy server'));
+        console.log(chalk.hex('#eeeeee')('Restarted proxy server'));
     }
 }
 // Start immediately
@@ -85,9 +85,9 @@ start();
 if (program.watch) {
     const watchLocation = typeof program.watch !== 'boolean' ? program.watch : program.file;
     const watcher = chokidar.watch(watchLocation, { persistent: true });
-    console.log(chalk_1.default.blue(`Watching changes in '${watchLocation}'`));
+    console.log(chalk.blue(`Watching changes in '${watchLocation}'`));
     watcher.on('change', path => {
-        console.log(chalk_1.default.hex('#eeeeee')(`Detected change in file ${path}. Restarting server...`));
+        console.log(chalk.hex('#eeeeee')(`Detected change in file ${path}. Restarting server...`));
         server.close(() => {
             start(true);
         });

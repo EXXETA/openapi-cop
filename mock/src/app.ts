@@ -1,5 +1,6 @@
 const debugMod = require('debug');
 const debug = debugMod('openapi-cop:mock');
+import chalk = require('chalk');
 import 'source-map-support/register';
 
 import * as errorHandler from 'errorhandler';
@@ -11,7 +12,6 @@ import OpenAPIBackend, {Request as OpenAPIRequest} from 'openapi-backend';
 import {OpenAPIV3} from 'openapi-types';
 import * as path from 'path';
 import * as http from 'http';
-import chalk from 'chalk';
 
 import {readJsonOrYamlSync} from './util';
 

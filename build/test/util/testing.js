@@ -1,11 +1,11 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const debug = require('debug');
+const chalk = require("chalk");
 const assert = require("assert");
 const child_process_1 = require("child_process");
 const path = require("path");
 const waitOn = require("wait-on");
-const chalk_1 = require("chalk");
 const config_1 = require("../config");
 const app_1 = require("../../src/app");
 const openapi_cop_mock_server_1 = require("openapi-cop-mock-server");
@@ -78,7 +78,7 @@ function testRequestForEachFile({ testTitle, dir, testRequests, client, callback
         it(`${testTitle}: ${fileName}`, async function () {
             // Skip if no test requests exist for the OpenAPI definition
             if (!(fileName in testRequests)) {
-                console.log(chalk_1.default.keyword('orange')(`Skipping '${fileName}' due to missing test requests.`));
+                console.log(chalk.keyword('orange')(`Skipping '${fileName}' due to missing test requests.`));
                 return;
             }
             await withServers({
@@ -170,7 +170,7 @@ function testRequestForEachFileWithServers({ testTitle, dir, testServers, client
             .replace(/\\/g, '/');
         it(`${testTitle}: ${fileName}`, async function () {
             if (!(fileName in testServers)) {
-                console.log(chalk_1.default.keyword('orange')(`Skipping '${fileName}' due to missing test target server.`));
+                console.log(chalk.keyword('orange')(`Skipping '${fileName}' due to missing test target server.`));
                 return;
             }
             if (testServers[fileName].length === 0) {

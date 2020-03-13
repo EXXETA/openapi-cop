@@ -1,10 +1,10 @@
 const debug = require('debug');
+import chalk = require('chalk');
 import * as assert from 'assert';
 import { AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios';
 import { ChildProcess, spawn } from 'child_process';
 import * as path from 'path';
 import * as waitOn from 'wait-on';
-import chalk from 'chalk';
 
 import { MOCK_SERVER_DIR, TARGET_SERVER_PORT, PROXY_PORT } from '../config';
 import { TestRequests, TestRequestConfig } from '../test_data/test-requests';

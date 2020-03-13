@@ -1,6 +1,6 @@
 const debug = require('debug')('openapi-cop:proxy');
 debug.log = console.log.bind(console); // output to stdout
-import chalk from 'chalk';
+import chalk = require('chalk');
 import * as express from 'express';
 import { NextFunction, Request, Response } from 'express';
 import * as http from 'http';

@@ -2,7 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const debug = require('debug')('openapi-cop:proxy');
 debug.log = console.log.bind(console); // output to stdout
-const chalk_1 = require("chalk");
+const chalk = require("chalk");
 const express = require("express");
 const path = require("path");
 const rp = require("request-promise-native");
@@ -24,10 +24,10 @@ async function buildApp(options) {
     };
     const app = express();
     const apiDocRaw = util_1.readFileSync(apiDocFile);
-    console.log(chalk_1.default.blue('Validating against ' +
-        chalk_1.default.bold(`${path.basename(apiDocFile)} ("${apiDocRaw.info.title}", version: ${apiDocRaw.info.version})`)));
+    console.log(chalk.blue('Validating against ' +
+        chalk.bold(`${path.basename(apiDocFile)} ("${apiDocRaw.info.title}", version: ${apiDocRaw.info.version})`)));
     if (defaultForbidAdditionalProperties) {
-        console.log(chalk_1.default.keyword('orange')('Additional properties will be forbidden by default. Existing `additionalProperties` settings in the OpenAPI document will NOT be overwritten.'));
+        console.log(chalk.keyword('orange')('Additional properties will be forbidden by default. Existing `additionalProperties` settings in the OpenAPI document will NOT be overwritten.'));
     }
     const apiDocConv = await util_1.convertToOpenApiV3(apiDocRaw, apiDocFile).catch(err => {
         throw new Error(`Could not convert document to OpenAPI v3: ${err}`);
