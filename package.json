@@ -56,7 +56,7 @@
     "qs": "6.9.1",
     "request-promise-native": "1.0.8",
     "swagger-client": "3.10.0",
-    "swagger-parser": "9.0.0",
+    "swagger-parser": "9.0.1",
     "wait-on": "4.0.1"
   },
   "devDependencies": {
