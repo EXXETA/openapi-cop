@@ -29,7 +29,7 @@
     "express": "4.17.1",
     "json-schema-ref-parser": "8.0.0",
     "js-yaml": "3.13.1",
-    "morgan": "1.9.1",
+    "morgan": "1.10.0",
     "openapi-backend": "2.3.5",
     "source-map-support": "0.5.16",
     "which": "2.0.2"
