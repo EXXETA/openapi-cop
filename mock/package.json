@@ -36,7 +36,7 @@
   },
   "devDependencies": {
     "@types/errorhandler": "1.5.0",
-    "@types/jest": "25.1.4",
+    "@types/jest": "25.1.5",
     "@types/js-yaml": "3.12.3",
     "@types/json-schema": "7.0.4",
     "@types/morgan": "1.9.0",
