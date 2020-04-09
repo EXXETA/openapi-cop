@@ -57,7 +57,7 @@
     "request-promise-native": "1.0.8",
     "swagger-client": "3.10.0",
     "swagger-parser": "9.0.1",
-    "wait-on": "4.0.1"
+    "wait-on": "4.0.2"
   },
   "devDependencies": {
     "@types/chai": "4.2.11",
