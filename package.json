@@ -79,7 +79,7 @@
     "eslint": "6.8.0",
     "find-process": "1.4.3",
     "gts": "1.1.2",
-    "mocha": "7.1.1",
+    "mocha": "7.1.2",
     "openapi-cop-mock-server": "file:./mock",
     "tslint": "6.1.1",
     "typescript": "3.8.3"
