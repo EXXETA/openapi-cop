@@ -68,7 +68,7 @@
     "@types/lodash.merge": "4.6.6",
     "@types/mocha": "7.0.2",
     "@types/node": "10.17.5",
-    "@types/qs": "6.9.1",
+    "@types/qs": "6.9.2",
     "@types/request-promise-native": "1.0.17",
     "@types/swagger-parser": "4.0.3",
     "@types/wait-on": "4.0.0",
