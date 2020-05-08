@@ -58,7 +58,9 @@ export async function buildApp(
 
   const app: express.Application = express();
 
-  const apiDocRaw = validUrl.isWebUri(apiDocFile) ? await fetchAndReadFile(apiDocFile) : readFileSync(apiDocFile);
+  const apiDocRaw = validUrl.isWebUri(apiDocFile)
+    ? await fetchAndReadFile(apiDocFile)
+    : readFileSync(apiDocFile);
   console.log(
     chalk.blue(
       'Validating against ' +

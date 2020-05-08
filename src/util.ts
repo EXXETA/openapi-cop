@@ -34,6 +34,7 @@ export function getAPIDocFormat(
   };
 
   for (const format in validators) {
+    if (!Object.prototype.hasOwnProperty.call(validators, format)) continue;
     const validator = validators[format];
     if (validator(apiDoc)) return format as 'openapi-2.0' | 'openapi-3.0';
   }
@@ -180,6 +181,8 @@ export function copyHeaders(
   targetResponse: Response,
 ): void {
   for (const key in sourceResponse.headers) {
+    if (!Object.prototype.hasOwnProperty.call(sourceResponse.headers, key))
+      continue;
     targetResponse.setHeader(key, sourceResponse.headers[key]);
   }
 }
