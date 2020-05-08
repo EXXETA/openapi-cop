@@ -34,7 +34,7 @@ program //
     'watch for changes in a file or directory (falls back to the OpenAPI file) and restart server accordingly',
   )
   .option('-v, --verbose', 'show verbose output')
-  .version('0.0.1')
+  .version('1.0.0')
   .parse(process.argv);
 
 let server: http.Server;
