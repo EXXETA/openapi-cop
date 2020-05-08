@@ -78,14 +78,13 @@ if (
  * Starts or restarts the express server.
  * @param restart - Used to log different messages when the server is restarted.
  */
-async function start(restart = false) {
-  const apiDocFile = path.resolve(program.file);
+async function start(restart = false): Promise<void> {
   try {
     server = await runProxy({
       port: program.port,
       host: program.host,
       targetUrl: program.target,
-      apiDocFile,
+      apiDocFile: program.file,
       defaultForbidAdditionalProperties:
         program.defaultForbidAdditionalProperties,
       silent: program.silent,

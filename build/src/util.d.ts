@@ -9,21 +9,23 @@ import { ValidationResults } from '../types/validation';
  * @param apiDoc A parsed OpenAPI document as a plain Object.
  */
 export declare function getAPIDocFormat(apiDoc: any): ('openapi-2.0' | 'openapi-3.0') | null;
-export declare function readFileSync(filePath: string): any;
+export declare function parseJsonOrYaml(filePath: string, data: string): any;
 export declare function readJsonOrYamlSync(filePath: string): any;
+export declare function readFileSync(filePath: string): any;
+export declare function fetchAndReadFile(uri: string): Promise<any>;
 /**
  * Converts a OpenAPI document to v3. It detects the filetype of the document
  * and returns the contents as an Object. Returns the contents of the
  * unmodified file when no conversion is necessary.
  */
 export declare function convertToOpenApiV3(apiDoc: any, filePath: string): Promise<any>;
-/** Converts an express.Request to a simplified OpenAPI request. */
-export declare function toOasRequest(req: express.Request): OasRequest;
 /**
  * Parses a request depending on the 'Content-Type' header. Supports JSON and
  * URL-encoded formats. The request body should be a Buffer.
  */
 export declare function parseRequest(req: express.Request): any;
+/** Converts an express.Request to a simplified OpenAPI request. */
+export declare function toOasRequest(req: express.Request): OasRequest;
 /**
  * Parses a response body depending on the 'Content-Type' header. Supports JSON
  * and URL-encoded formats. The response body should be a string.

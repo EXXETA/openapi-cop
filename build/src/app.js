@@ -5,6 +5,7 @@ debug.log = console.log.bind(console); // output to stdout
 const chalk = require("chalk");
 const express = require("express");
 const path = require("path");
+const validUrl = require("valid-url");
 const rp = require("request-promise-native");
 const util_1 = require("./util");
 const validation_1 = require("./validation");
@@ -23,7 +24,7 @@ async function buildApp(options) {
         ...options,
     };
     const app = express();
-    const apiDocRaw = util_1.readFileSync(apiDocFile);
+    const apiDocRaw = validUrl.isWebUri(apiDocFile) ? await util_1.fetchAndReadFile(apiDocFile) : util_1.readFileSync(apiDocFile);
     console.log(chalk.blue('Validating against ' +
         chalk.bold(`${path.basename(apiDocFile)} ("${apiDocRaw.info.title}", version: ${apiDocRaw.info.version})`)));
     if (defaultForbidAdditionalProperties) {

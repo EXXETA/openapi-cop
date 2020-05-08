@@ -20,7 +20,7 @@ program //
     .option('--silent', 'do not send responses with validation errors, just set validation headers')
     .option('-w, --watch [watchLocation]', 'watch for changes in a file or directory (falls back to the OpenAPI file) and restart server accordingly')
     .option('-v, --verbose', 'show verbose output')
-    .version('0.0.1')
+    .version('1.0.0')
     .parse(process.argv);
 let server;
 if (program.verbose) {
@@ -54,13 +54,12 @@ if (program.target.indexOf('//localhost') !== -1 &&
  * @param restart - Used to log different messages when the server is restarted.
  */
 async function start(restart = false) {
-    const apiDocFile = path.resolve(program.file);
     try {
         server = await app_1.runProxy({
             port: program.port,
             host: program.host,
             targetUrl: program.target,
-            apiDocFile,
+            apiDocFile: program.file,
             defaultForbidAdditionalProperties: program.defaultForbidAdditionalProperties,
             silent: program.silent,
         });

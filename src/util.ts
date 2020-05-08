@@ -11,6 +11,7 @@ import * as qs from 'qs';
 import * as waitOn from 'wait-on';
 import { ResponseParsingError } from '../types/errors';
 import { ValidationResults } from '../types/validation';
+import * as rp from 'request-promise-native';
 
 function isSwaggerV2(apiDoc: any): boolean {
   return apiDoc.swagger === '2.0';
@@ -33,7 +34,6 @@ export function getAPIDocFormat(
   };
 
   for (const format in validators) {
-    if (!validators.hasOwnProperty(format)) continue;
     const validator = validators[format];
     if (validator(apiDoc)) return format as 'openapi-2.0' | 'openapi-3.0';
   }
@@ -41,7 +41,25 @@ export function getAPIDocFormat(
   return null;
 }
 
-export function readFileSync(filePath: string) {
+export function parseJsonOrYaml(filePath: string, data: string): any {
+  switch (path.extname(filePath)) {
+    case '.json':
+      return JSON.parse(data);
+    case '.yaml':
+    case '.yml':
+      return yaml.safeLoad(data);
+    case '.':
+      throw new Error('Will not read a file that has no extension.');
+    default:
+      throw new Error('Wrong file extension.');
+  }
+}
+
+export function readJsonOrYamlSync(filePath: string): any {
+  return parseJsonOrYaml(filePath, fs.readFileSync(filePath, 'utf8'));
+}
+
+export function readFileSync(filePath: string): any {
   const cwd = process.cwd();
   process.chdir(path.dirname(filePath));
   const apiDoc = readJsonOrYamlSync(filePath);
@@ -49,18 +67,8 @@ export function readFileSync(filePath: string) {
   return apiDoc;
 }
 
-export function readJsonOrYamlSync(filePath: string): any {
-  switch (path.extname(filePath)) {
-    case '.json':
-      return JSON.parse(fs.readFileSync(filePath, 'utf8'));
-    case '.yaml':
-    case '.yml':
-      return yaml.safeLoad(fs.readFileSync(filePath, 'utf8'));
-    case '.':
-      throw new Error('Will not convert a file that has no extension.');
-    default:
-      throw new Error('Wrong file extension.');
-  }
+export async function fetchAndReadFile(uri: string): Promise<any> {
+  return rp(uri).then(responseBody => parseJsonOrYaml(uri, responseBody));
 }
 
 /**
@@ -73,42 +81,20 @@ export async function convertToOpenApiV3(
   filePath: string,
 ): Promise<any> {
   switch (getAPIDocFormat(apiDoc)) {
-    case 'openapi-2.0':
+    case 'openapi-2.0': {
       const apiDocTarget = await convertApiFormat({
         from: 'swagger_2',
         to: 'openapi_3',
         source: filePath,
       });
       return apiDocTarget.spec;
+    }
     case 'openapi-3.0':
       // Return unmodified OpenAPI document
       return apiDoc;
     default:
       throw new Error('Unsupported API document format');
   }
-}
-
-/** Converts an express.Request to a simplified OpenAPI request. */
-export function toOasRequest(req: express.Request): OasRequest {
-  const oasRequest: OasRequest = {
-    method: req.method,
-    path: req.params[0],
-    headers: req.headers as {
-      [key: string]: string | string[];
-    },
-    query: req.query,
-  };
-
-  // Parse when body is present
-  if (typeof req.body !== 'undefined' && req.body instanceof Buffer) {
-    try {
-      oasRequest.body = parseRequest(req);
-    } catch (e) {
-      throw new ResponseParsingError('Failed to parse request body. ' + e);
-    }
-  }
-
-  return oasRequest;
 }
 
 /**
@@ -132,6 +118,29 @@ export function parseRequest(req: express.Request): any {
     return qs.parse(req.body.toString(charset));
   }
   throw new Error(`No parser available for content type '${contentType}'.`);
+}
+
+/** Converts an express.Request to a simplified OpenAPI request. */
+export function toOasRequest(req: express.Request): OasRequest {
+  const oasRequest: OasRequest = {
+    method: req.method,
+    path: req.params[0],
+    headers: req.headers as {
+      [key: string]: string | string[];
+    },
+    query: req.query,
+  };
+
+  // Parse when body is present
+  if (typeof req.body !== 'undefined' && req.body instanceof Buffer) {
+    try {
+      oasRequest.body = parseRequest(req);
+    } catch (e) {
+      throw new ResponseParsingError('Failed to parse request body. ' + e);
+    }
+  }
+
+  return oasRequest;
 }
 
 /**
@@ -166,11 +175,12 @@ export function parseResponseBody(
  * Copies the headers from a source response into a target response,
  * overwriting existing values.
  */
-export function copyHeaders(sourceResponse: any, targetResponse: Response) {
+export function copyHeaders(
+  sourceResponse: any,
+  targetResponse: Response,
+): void {
   for (const key in sourceResponse.headers) {
-    if (sourceResponse.headers.hasOwnProperty(key)) {
-      targetResponse.setHeader(key, sourceResponse.headers[key]);
-    }
+    targetResponse.setHeader(key, sourceResponse.headers[key]);
   }
 }
 
@@ -181,7 +191,7 @@ export function copyHeaders(sourceResponse: any, targetResponse: Response) {
 export function setValidationHeader(
   res: Response,
   validationResults: ValidationResults,
-) {
+): void {
   res.setHeader(
     'openapi-cop-validation-result',
     JSON.stringify(validationResults),
@@ -192,7 +202,10 @@ export function setValidationHeader(
  * Sets a custom openapi-cop validation header ('openapi-cop-validation-result')
  * to the validation results as JSON.
  */
-export function setSourceRequestHeader(res: Response, oasRequest: OasRequest) {
+export function setSourceRequestHeader(
+  res: Response,
+  oasRequest: OasRequest,
+): void {
   res.setHeader('openapi-cop-source-request', JSON.stringify(oasRequest));
 }
 
@@ -217,10 +230,10 @@ export async function closeServer(server: http.Server): Promise<void> {
  * @param obj Object to be mapped on.
  * @param fn Mapping function that returns the new value.
  */
-export function mapWalkObject(obj: any, fn: (currentObj: any) => any) {
+export function mapWalkObject(obj: any, fn: (currentObj: any) => any): any {
   let objCopy = Object.assign({}, obj);
   for (const key in obj) {
-    if (!obj.hasOwnProperty(key)) continue;
+    if (!Object.prototype.hasOwnProperty.call(obj, key)) continue;
     const value = obj[key];
     if (value.constructor === Object) {
       objCopy[key] = mapWalkObject(value, fn);

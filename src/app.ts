@@ -6,6 +6,7 @@ import { NextFunction, Request, Response } from 'express';
 import * as http from 'http';
 import { Operation } from 'openapi-backend';
 import * as path from 'path';
+import * as validUrl from 'valid-url';
 import * as rp from 'request-promise-native';
 import { ValidationResults } from '../types/validation';
 import {
@@ -17,6 +18,7 @@ import {
   setSourceRequestHeader,
   setValidationHeader,
   toOasRequest,
+  fetchAndReadFile,
 } from './util';
 import { dereference, hasErrors, resolve, Validator } from './validation';
 
@@ -56,7 +58,7 @@ export async function buildApp(
 
   const app: express.Application = express();
 
-  const apiDocRaw = readFileSync(apiDocFile);
+  const apiDocRaw = validUrl.isWebUri(apiDocFile) ? await fetchAndReadFile(apiDocFile) : readFileSync(apiDocFile);
   console.log(
     chalk.blue(
       'Validating against ' +
