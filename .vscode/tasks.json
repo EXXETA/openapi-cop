@@ -8,7 +8,7 @@
             "type": "shell",
             "command": "bash",
             "args": [
-                "docker/run-docker-test.bash"
+                "test/docker/run-docker-test.bash"
             ],
             "group": {
                 "kind": "test",
