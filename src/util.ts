@@ -181,8 +181,9 @@ export function copyHeaders(
   targetResponse: Response,
 ): void {
   for (const key in sourceResponse.headers) {
-    if (!Object.prototype.hasOwnProperty.call(sourceResponse.headers, key))
+    if (!Object.prototype.hasOwnProperty.call(sourceResponse.headers, key)) {
       continue;
+    }
     targetResponse.setHeader(key, sourceResponse.headers[key]);
   }
 }
