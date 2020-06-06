@@ -59,7 +59,7 @@
     "swagger-client": "3.10.6",
     "swagger-parser": "9.0.1",
     "valid-url": "^1.0.9",
-    "wait-on": "5.0.0"
+    "wait-on": "5.0.1"
   },
   "devDependencies": {
     "@types/chai": "4.2.11",
