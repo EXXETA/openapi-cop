@@ -43,7 +43,7 @@
     "@types/valid-url": "^1.0.3",
     "ajv": "6.12.2",
     "api-spec-converter": "2.11.0",
-    "chalk": "4.0.0",
+    "chalk": "4.1.0",
     "chokidar": "3.4.0",
     "commander": "4.1.1",
     "content-type": "1.0.4",
