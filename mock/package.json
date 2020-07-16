@@ -50,7 +50,7 @@
     "jest": "26.1.0",
     "ts-jest": "26.1.2",
     "tslint": "6.1.2",
-    "typescript": "3.9.6",
+    "typescript": "3.9.7",
     "wait-on": "5.1.0"
   }
 }
