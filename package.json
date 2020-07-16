@@ -44,7 +44,7 @@
     "ajv": "6.12.3",
     "api-spec-converter": "2.11.1",
     "chalk": "4.1.0",
-    "chokidar": "3.4.0",
+    "chokidar": "3.4.1",
     "commander": "4.1.1",
     "content-type": "1.0.4",
     "debug": "4.1.1",
