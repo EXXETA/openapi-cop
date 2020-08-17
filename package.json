@@ -68,7 +68,7 @@
     "@types/js-yaml": "3.12.5",
     "@types/json-schema": "7.0.5",
     "@types/lodash.merge": "4.6.6",
-    "@types/mocha": "8.0.2",
+    "@types/mocha": "8.0.3",
     "@types/node": "10.17.5",
     "@types/qs": "6.9.4",
     "@types/request-promise-native": "1.0.17",
