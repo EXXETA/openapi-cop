@@ -84,6 +84,6 @@
     "mocha": "8.1.1",
     "openapi-cop-mock-server": "file:./mock",
     "tslint": "6.1.3",
-    "typescript": "3.9.7"
+    "typescript": "4.0.2"
   }
 }
