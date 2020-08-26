@@ -30,7 +30,7 @@
     "json-schema-ref-parser": "9.0.6",
     "js-yaml": "3.14.0",
     "morgan": "1.10.0",
-    "openapi-backend": "3.5.1",
+    "openapi-backend": "3.5.2",
     "source-map-support": "0.5.19",
     "which": "2.0.2"
   },
