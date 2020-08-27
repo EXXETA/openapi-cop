@@ -42,7 +42,7 @@
     "@types/express": "4.17.4",
     "@types/valid-url": "^1.0.3",
     "ajv": "6.12.4",
-    "api-spec-converter": "2.11.1",
+    "api-spec-converter": "2.11.2",
     "chalk": "4.1.0",
     "chokidar": "3.4.2",
     "commander": "4.1.1",
