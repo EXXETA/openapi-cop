@@ -38,7 +38,7 @@
     "@types/errorhandler": "1.5.0",
     "@types/jest": "26.0.12",
     "@types/js-yaml": "3.12.5",
-    "@types/json-schema": "7.0.5",
+    "@types/json-schema": "7.0.6",
     "@types/morgan": "1.9.1",
     "@types/node": "11.15.5",
     "@types/swagger-parser": "4.0.3",
