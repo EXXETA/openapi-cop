@@ -52,7 +52,7 @@
     "js-yaml": "3.14.0",
     "json-schema-ref-parser": "9.0.6",
     "lodash": "4.17.20",
-    "openapi-backend": "3.5.2",
+    "openapi-backend": "3.5.3",
     "openapi-types": "7.0.1",
     "qs": "6.9.4",
     "request-promise-native": "1.0.9",
