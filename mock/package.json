@@ -24,7 +24,7 @@
     "chalk": "4.1.0",
     "chokidar": "3.4.2",
     "commander": "4.1.1",
-    "debug": "4.1.1",
+    "debug": "4.2.0",
     "errorhandler": "1.5.1",
     "express": "4.17.1",
     "json-schema-ref-parser": "9.0.6",

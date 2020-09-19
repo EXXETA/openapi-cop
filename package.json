@@ -47,7 +47,7 @@
     "chokidar": "3.4.2",
     "commander": "4.1.1",
     "content-type": "1.0.4",
-    "debug": "4.1.1",
+    "debug": "4.2.0",
     "express": "4.17.1",
     "js-yaml": "3.14.0",
     "json-schema-ref-parser": "9.0.6",
