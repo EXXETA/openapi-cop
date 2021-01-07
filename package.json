@@ -57,7 +57,7 @@
     "qs": "6.9.4",
     "request-promise-native": "1.0.9",
     "swagger-client": "3.12.0",
-    "swagger-parser": "9.0.1",
+    "swagger-parser": "10.0.2",
     "valid-url": "^1.0.9",
     "wait-on": "5.2.0"
   },
