@@ -80,7 +80,7 @@
     "chai": "4.2.0",
     "eslint": "7.13.0",
     "find-process": "1.4.4",
-    "gts": "1.1.2",
+    "gts": "3.1.0",
     "mocha": "8.2.1",
     "openapi-cop-mock-server": "file:./mock",
     "tslint": "6.1.3",
