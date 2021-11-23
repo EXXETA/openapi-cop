@@ -57,7 +57,7 @@ if (!program.target) {
 }
 
 const targetPortMatch = (program.target as string).match(
-  /\w+:\/\/[\w\.\-]+:(\d{1,4})(\/|$)/,
+  /\w+:\/\/[\w\.\-]+:(\d{1,5})(\/|$)/,
 );
 const targetPort: string = targetPortMatch !== null ? targetPortMatch[1] : '';
 
