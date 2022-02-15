@@ -79,7 +79,7 @@
     "axios": "0.19.2",
     "chai": "4.2.0",
     "eslint": "7.13.0",
-    "find-process": "1.4.4",
+    "find-process": "1.4.7",
     "gts": "3.1.0",
     "mocha": "8.2.1",
     "openapi-cop-mock-server": "file:./mock",
