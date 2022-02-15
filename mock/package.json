@@ -39,7 +39,7 @@
     "@types/jest": "26.0.24",
     "@types/js-yaml": "3.12.5",
     "@types/json-schema": "7.0.9",
-    "@types/morgan": "1.9.2",
+    "@types/morgan": "1.9.3",
     "@types/node": "11.15.53",
     "@types/swagger-parser": "4.0.3",
     "@types/wait-on": "5.2.0",
