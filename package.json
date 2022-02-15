@@ -63,7 +63,7 @@
   },
   "devDependencies": {
     "@types/chai": "4.2.14",
-    "@types/content-type": "1.1.3",
+    "@types/content-type": "1.1.5",
     "@types/debug": "4.1.5",
     "@types/js-yaml": "3.12.5",
     "@types/json-schema": "7.0.6",
