@@ -19,7 +19,7 @@ jobs:
       with:
         node-version: 10.0.0
     - name: Publish on "Release X.Y.Z" commits
-      uses: pascalgn/npm-publish-action@51fdb4531e99aac1873764ef7271af448dc42ab4
+      uses: pascalgn/npm-publish-action@e05dd3cd13412801d978714d8eac1cb922826da1
       with:
         tag_name: "v%s"
         tag_message: "v%s"
