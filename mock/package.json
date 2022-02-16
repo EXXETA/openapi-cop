@@ -21,7 +21,7 @@
     "dev": "npm run compile && npm start -- --port 9000 --file \"../schemas/v3/6-examples.yaml\""
   },
   "dependencies": {
-    "chalk": "4.1.0",
+    "chalk": "4.1.2",
     "chokidar": "3.4.3",
     "commander": "4.1.1",
     "debug": "4.2.0",
