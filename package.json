@@ -50,7 +50,7 @@
     "debug": "4.2.0",
     "express": "4.17.1",
     "js-yaml": "3.14.1",
-    "json-schema-ref-parser": "9.0.6",
+    "json-schema-ref-parser": "9.0.9",
     "lodash": "4.17.20",
     "openapi-backend": "3.6.3",
     "openapi-types": "7.0.1",
