@@ -51,7 +51,7 @@
     "express": "4.17.1",
     "js-yaml": "3.14.1",
     "json-schema-ref-parser": "9.0.9",
-    "lodash": "4.17.20",
+    "lodash": "4.17.21",
     "openapi-backend": "3.6.3",
     "openapi-types": "7.0.1",
     "qs": "6.9.4",
