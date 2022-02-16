@@ -28,7 +28,7 @@
     "errorhandler": "1.5.1",
     "express": "4.17.1",
     "json-schema-ref-parser": "9.0.6",
-    "js-yaml": "3.14.0",
+    "js-yaml": "3.14.1",
     "morgan": "1.10.0",
     "openapi-backend": "3.6.3",
     "source-map-support": "0.5.21",
@@ -37,7 +37,7 @@
   "devDependencies": {
     "@types/errorhandler": "1.5.0",
     "@types/jest": "26.0.24",
-    "@types/js-yaml": "3.12.5",
+    "@types/js-yaml": "3.12.7",
     "@types/json-schema": "7.0.9",
     "@types/morgan": "1.9.3",
     "@types/node": "11.15.53",
