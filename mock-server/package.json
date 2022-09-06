@@ -21,7 +21,7 @@
     "posttest": "npm run check"
   },
   "dependencies": {
-    "chalk": "4.1.2",
+    "chalk": "5.0.1",
     "chokidar": "3.5.3",
     "commander": "4.1.1",
     "debug": "4.3.3",
