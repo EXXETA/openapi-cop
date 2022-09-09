@@ -73,7 +73,7 @@
     "@types/js-yaml": "3.12.7",
     "@types/json-schema": "7.0.11",
     "@types/lodash.merge": "4.6.7",
-    "@types/mocha": "9.1.0",
+    "@types/mocha": "9.1.1",
     "@types/node": "10.17.60",
     "@types/qs": "6.9.7",
     "@types/request-promise-native": "1.0.18",
@@ -86,7 +86,7 @@
     "eslint": "7.32.0",
     "find-process": "1.4.7",
     "gts": "3.1.1",
-    "mocha": "9.2.1",
+    "mocha": "9.2.2",
     "openapi-cop-mock-server": "file:./mock-server",
     "typescript": "4.0.5"
   }
