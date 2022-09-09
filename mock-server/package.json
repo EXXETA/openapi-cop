@@ -38,7 +38,7 @@
     "@types/errorhandler": "1.5.0",
     "@types/jest": "27.4.0",
     "@types/js-yaml": "3.12.7",
-    "@types/json-schema": "7.0.9",
+    "@types/json-schema": "7.0.11",
     "@types/morgan": "1.9.3",
     "@types/node": "11.15.53",
     "@types/prettier": "2.6.0",
