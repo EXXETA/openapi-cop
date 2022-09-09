@@ -8,7 +8,7 @@
     "url": "https://github.com/EXXETA/openapi-cop.git"
   },
   "engines": {
-    "node": "^10 || ^12"
+    "node": "^10 || ^12 || ^16.0.0"
   },
   "keywords": [
     "openapi",
@@ -74,7 +74,7 @@
     "@types/json-schema": "7.0.9",
     "@types/lodash.merge": "4.6.6",
     "@types/mocha": "9.1.0",
-    "@types/node": "10.17.60",
+    "@types/node": "16.11.58",
     "@types/qs": "6.9.7",
     "@types/request-promise-native": "1.0.18",
     "@types/swagger-parser": "4.0.3",

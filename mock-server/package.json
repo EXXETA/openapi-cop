@@ -40,7 +40,7 @@
     "@types/js-yaml": "3.12.7",
     "@types/json-schema": "7.0.9",
     "@types/morgan": "1.9.3",
-    "@types/node": "11.15.53",
+    "@types/node": "16.11.58",
     "@types/prettier": "2.6.0",
     "@types/swagger-parser": "4.0.3",
     "@types/wait-on": "5.3.1",
