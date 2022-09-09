@@ -61,7 +61,7 @@
     "openapi-types": "10.0.0",
     "qs": "6.10.3",
     "request-promise-native": "1.0.9",
-    "swagger-client": "3.18.4",
+    "swagger-client": "3.18.5",
     "swagger-parser": "9.0.1",
     "valid-url": "^1.0.9",
     "wait-on": "6.0.1"
