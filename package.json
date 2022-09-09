@@ -67,7 +67,7 @@
     "wait-on": "6.0.1"
   },
   "devDependencies": {
-    "@types/chai": "4.3.0",
+    "@types/chai": "4.3.3",
     "@types/content-type": "1.1.5",
     "@types/debug": "4.1.7",
     "@types/js-yaml": "3.12.7",
