@@ -1,10 +1,10 @@
-FROM node:10 AS builder
+FROM node:18 AS builder
 WORKDIR /app
 COPY . .
 RUN npm ci --unsafe-perm
 RUN npm run compile
 
-FROM node:10 AS main
+FROM node:18 AS main
 
 ENV TARGET ""
 ENV FILE ""
