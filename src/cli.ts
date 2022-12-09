@@ -9,7 +9,7 @@ import * as chokidar from 'chokidar';
 import * as program from 'commander';
 import * as http from 'http';
 import * as path from 'path';
-const npmPackage = require('../../package.json');
+import * as npmPackage from '../package.json';
 
 import { runProxy } from './app';
 
