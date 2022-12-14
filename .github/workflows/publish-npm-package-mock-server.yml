@@ -1,0 +1,47 @@
+name: Publish openapi-mock-server Node.js package
+
+on:
+  workflow_dispatch:
+
+env:
+  NODE_VERSION: '10.x'
+
+jobs:
+  publish-to-npmjs:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./mock-server
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up publishing to npmjs.com
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          registry-url: 'https://registry.npmjs.org'
+      - run: npm ci
+      - run: npm run compile
+      - run: npm publish --access=public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}
+  publish-to-github-packages:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./mock-server
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up publishing to GitHub Packages
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          registry-url: 'https://npm.pkg.github.com'
+          scope: '@exxeta'
+      - run: npm ci
+      - run: npm run compile
+      - run: npm publish
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

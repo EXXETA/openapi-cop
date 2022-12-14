@@ -1,6 +1,5 @@
 node_modules
 build
-mock-server/node_modules
-mock-server/build
+mock-server
 .idea
 .vscode

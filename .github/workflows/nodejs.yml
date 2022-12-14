@@ -34,11 +34,7 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
 
-    - name: Install dependencies & build (mock)
-      working-directory: ./mock-server
-      run: npm ci
-
-    - name: Install dependencies & build (proxy)
+    - name: Install dependencies & build
       run: npm ci
 
     - name: Test

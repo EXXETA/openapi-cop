@@ -1,6 +1,6 @@
 import {runProxy as runProxyApp} from '../../src/app';
 import {MOCK_SERVER_DIR, PROXY_PORT, TARGET_SERVER_PORT} from '../config';
-import {runApp as runMockApp} from 'openapi-cop-mock-server';
+import {runApp as runMockApp} from '@exxeta/openapi-cop-mock-server';
 import {closeServer} from '../../src/util';
 import {ChildProcess, spawn} from 'child_process';
 import * as waitOn from 'wait-on';

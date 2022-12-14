@@ -1,14 +1,23 @@
 {
-  "name": "openapi-cop-mock-server",
-  "version": "1.0.0",
-  "description": "Mock server for use together with the openapi-cop proxy server",
+  "name": "@exxeta/openapi-cop-mock-server",
+  "version": "1.0.1",
+  "description": "Mock server used to test openapi-cop proxy server.",
   "license": "MIT",
   "author": "Alexis Luengas",
-  "private": true,
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/EXXETA/openapi-cop.git"
+  },
+  "engines": {
+    "node": "^10 || ^12"
+  },
   "main": "./build/src/app",
   "bin": "./build/src/cli.js",
+  "types": "./build/src/app.d.ts",
+  "files": [
+    "build/"
+  ],
   "scripts": {
-    "postinstall": "npm run compile",
     "check": "gts check",
     "clean": "gts clean",
     "compile": "tsc -p .",
