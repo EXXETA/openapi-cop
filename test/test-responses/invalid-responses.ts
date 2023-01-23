@@ -2,7 +2,8 @@ import * as express from 'express';
 import {Request, Response} from 'express';
 
 import {TARGET_SERVER_PORT} from '../config';
-import {TestResponses} from '../../types/test-requests';
+import {TestResponses} from 'test-request-map';
+import * as http from 'http';
 
 /**
  * Utility function to create a server that responds to only one given path/method.
@@ -11,8 +12,8 @@ function responderTo(
   method: string,
   path: string,
   routeHandler: express.RequestHandler,
-) {
-  return async () => {
+): () => http.Server {
+  return () => {
     const app: express.Application = express();
     ((app as any)[method] as express.IRouterMatcher<any>)(path, routeHandler);
     return app.listen(TARGET_SERVER_PORT);
@@ -37,7 +38,7 @@ export const INVALID_RESPONSES: {
           url: '/echo',
           data: JSON.stringify({input: 'ECHO!'}),
         },
-        runServer: responderTo(
+        serverFactory: responderTo(
           'post',
           '/echo',
           (_req: Request, res: Response) => {
@@ -60,7 +61,7 @@ export const INVALID_RESPONSES: {
           url: '/echo',
           data: JSON.stringify({input: 'ECHO!'}),
         },
-        runServer: responderTo(
+        serverFactory: responderTo(
           'post',
           '/echo',
           (_req: Request, res: Response) => {
@@ -77,7 +78,7 @@ export const INVALID_RESPONSES: {
           url: '/echo',
           data: JSON.stringify({input: 'ECHO!'}),
         },
-        runServer: responderTo(
+        serverFactory: responderTo(
           'post',
           '/echo',
           (_req: Request, res: Response) => {
@@ -90,7 +91,7 @@ export const INVALID_RESPONSES: {
     '6-examples.yaml': [
       {
         request: {method: 'GET', url: '/pets'},
-        runServer: responderTo(
+        serverFactory: responderTo(
           'get',
           '/pets',
           (_req: Request, res: Response) => {
@@ -120,7 +121,7 @@ export const STRICTLY_INVALID_RESPONSES: {
           url: '/echo',
           data: JSON.stringify({input: 'ECHO!'}),
         },
-        runServer: responderTo(
+        serverFactory: responderTo(
           'post',
           '/echo',
           (_req: Request, res: Response) => {

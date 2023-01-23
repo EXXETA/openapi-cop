@@ -65,7 +65,7 @@ export function readFileSync(filePath: string): any {
 }
 
 export async function fetchAndReadFile(uri: string): Promise<any> {
-  return rp(uri).then(responseBody => parseJsonOrYaml(uri, responseBody));
+  return rp(uri).then((responseBody) => parseJsonOrYaml(uri, responseBody));
 }
 
 /**
@@ -213,7 +213,7 @@ export function setSourceRequestHeader(
 export async function closeServer(server: http.Server): Promise<void> {
   const port = (server.address() as any).port;
   await new Promise<void>((resolve, reject) => {
-    server.close(err => {
+    server.close((err) => {
       if (err) return reject(err);
       resolve();
     });
@@ -231,7 +231,11 @@ export async function closeServer(server: http.Server): Promise<void> {
  * @param fn Mapping function that returns the new value.
  * @param traversalPath internal parameter used to track the current traversal path
  */
-export function mapWalkObject(obj: any, fn: (currentObj: any, traversalPath: Array<string>) => any, traversalPath: Array<string> = []): any {
+export function mapWalkObject(
+  obj: any,
+  fn: (currentObj: any, traversalPath: Array<string>) => any,
+  traversalPath: Array<string> = [],
+): any {
   let objCopy = Object.assign({}, obj);
   for (const key in obj) {
     if (!Object.prototype.hasOwnProperty.call(obj, key)) continue;
@@ -250,4 +254,27 @@ export function mapWalkObject(obj: any, fn: (currentObj: any, traversalPath: Arr
   }
   objCopy = fn(objCopy, traversalPath);
   return objCopy;
+}
+
+export interface CliFlags {
+  flag: string;
+  value?: string | boolean;
+}
+
+/**
+ * Receives a list of optional CLI flags and maps them to a list of strings.
+ * Flags are not included if their value is not a string or equal to `true` (boolean flag).
+ *
+ * @param flags
+ */
+export function buildCliArguments(flags: Array<CliFlags>): Array<string> {
+  return flags
+    .filter(({ value }) => typeof value === 'string' || value === true)
+    .flatMap(({ flag, value }) => {
+      const args = [flag];
+      if (typeof value === 'string') {
+        args.push(value);
+      }
+      return args;
+    });
 }

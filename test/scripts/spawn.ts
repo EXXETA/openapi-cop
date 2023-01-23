@@ -13,10 +13,26 @@
 
 import * as path from 'path';
 
-import {PROXY_PORT, TARGET_SERVER_PORT} from '../config';
-import {spawnProxyWithMockServer} from '../util/server';
+import { PROXY_PORT, TARGET_SERVER_PORT } from '../config';
+import { spawnProxyWithMockServer } from '../util/server';
 
-const apiDocRelativePath = process.argv[2] ? process.argv[2] : 'test/schemas/v3/3-parameters.yaml';
+const apiDocRelativePath = process.argv[2]
+  ? process.argv[2]
+  : 'test/schemas/v3/3-parameters.yaml';
 const apiDocPath = path.resolve(__dirname, '../../..', apiDocRelativePath);
 
-spawnProxyWithMockServer(PROXY_PORT, TARGET_SERVER_PORT, apiDocPath, {stdio: 'inherit'});
+spawnProxyWithMockServer(
+  {
+    host: 'localhost',
+    port: PROXY_PORT,
+    targetUrl: `http://localhost:${TARGET_SERVER_PORT}`,
+    apiDocPath,
+  },
+  {
+    port: TARGET_SERVER_PORT,
+    apiDocFile: apiDocPath,
+  },
+  {
+    stdio: 'inherit',
+  },
+);

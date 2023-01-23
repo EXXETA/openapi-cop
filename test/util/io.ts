@@ -1,6 +1,10 @@
 import * as fs from 'fs';
 import * as path from 'path';
 
+export function getFileName(filePath: string): string {
+  return path.normalize(path.basename(filePath)).replace(/\\/g, '/');
+}
+
 /**
  * Synchronously lists all top-level files in a directory.
  */

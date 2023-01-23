@@ -1,17 +1,18 @@
+import chalk = require('chalk');
+
 const debug = require('debug')('openapi-cop:proxy');
 debug.log = console.log.bind(console); // output to stdout
-import chalk = require('chalk');
 import * as express from 'express';
-import {Request, Response} from 'express';
+import { Request, Response } from 'express';
 import * as http from 'http';
-import {Operation} from 'openapi-backend';
+import { Operation } from 'openapi-backend';
 import * as path from 'path';
 import * as crypto from 'crypto';
 import * as validUrl from 'valid-url';
 import * as rp from 'request-promise-native';
 import * as errors from 'request-promise-native/errors';
 
-import {ValidationResults} from '../types/validation';
+import { ValidationResults } from '../types/validation';
 import {
   convertToOpenApiV3,
   copyHeaders,
@@ -23,8 +24,8 @@ import {
   setValidationHeader,
   toOasRequest,
 } from './util';
-import {dereference, hasErrors, resolve, Validator} from './validation';
-import {URL} from "url";
+import { dereference, hasErrors, resolve, Validator } from './validation';
+import { URL } from 'url';
 
 interface BuildOptions {
   targetUrl: string;
@@ -40,10 +41,15 @@ const defaults: BuildOptions = {
   silent: false,
 };
 
-interface ProxyOptions {
-  port: number;
+export type ProxyOptions = BaseProxyOptions & ExtendedProxyOptions;
+
+export interface BaseProxyOptions {
+  port: string | number;
   host: string;
   targetUrl: string;
+}
+
+export interface ExtendedProxyOptions {
   apiDocPath: string;
   defaultForbidAdditionalProperties?: boolean;
   silent?: boolean;
@@ -55,7 +61,7 @@ interface ProxyOptions {
 export async function buildApp(
   options: BuildOptions,
 ): Promise<express.Application> {
-  const {targetUrl, apiDocPath, defaultForbidAdditionalProperties, silent} = {
+  const { targetUrl, apiDocPath, defaultForbidAdditionalProperties, silent } = {
     ...defaults,
     ...options,
   };
@@ -69,11 +75,11 @@ export async function buildApp(
   console.log(
     chalk.blue(
       'Validating against ' +
-      chalk.bold(
-        `${path.basename(apiDocPath)} ("${rawApiDoc.info.title}", version: ${
-          rawApiDoc.info.version
-        })`,
-      ),
+        chalk.bold(
+          `${path.basename(apiDocPath)} ("${rawApiDoc.info.title}", version: ${
+            rawApiDoc.info.version
+          })`,
+        ),
     ),
   );
 
@@ -85,12 +91,16 @@ export async function buildApp(
     );
   }
 
-  const apiDoc = await prepareApiDocument(rawApiDoc, apiDocPath, defaultForbidAdditionalProperties);
+  const apiDoc = await prepareApiDocument(
+    rawApiDoc,
+    apiDocPath,
+    defaultForbidAdditionalProperties,
+  );
 
   const oasValidator: Validator = new Validator(apiDoc);
 
   // Consume raw request body
-  app.use(express.raw({type: '*/*'}));
+  app.use(express.raw({ type: '*/*' }));
 
   // Global route handler
   app.all('*', (req: Request, res: Response) => {
@@ -146,17 +156,18 @@ export async function buildApp(
           statusCode,
         );
 
-        validationResults.responseHeaders = oasValidator.validateResponseHeaders(
-          serverResponse.headers,
-          operation as Operation,
-          statusCode,
-        );
+        validationResults.responseHeaders =
+          oasValidator.validateResponseHeaders(
+            serverResponse.headers,
+            operation as Operation,
+            statusCode,
+          );
 
         copyHeaders(serverResponse, res);
         setValidationHeader(res, validationResults);
         debug(
           `Validation results [${oasRequest.method} ${oasRequest.path}] ` +
-          JSON.stringify(validationResults, null, 2),
+            JSON.stringify(validationResults, null, 2),
         );
 
         if (silent || !hasErrors(validationResults)) {
@@ -187,7 +198,7 @@ export async function buildApp(
         setValidationHeader(res, validationResults);
         debug(
           `Validation results [${oasRequest.method} ${oasRequest.path}] ` +
-          JSON.stringify(validationResults, null, 2),
+            JSON.stringify(validationResults, null, 2),
         );
 
         if (!reason.response && reason instanceof errors.RequestError) {
@@ -232,13 +243,13 @@ export async function buildApp(
  * the server response untouched
  */
 export async function runProxy({
-                                 port,
-                                 host,
-                                 targetUrl,
-                                 apiDocPath,
-                                 defaultForbidAdditionalProperties = false,
-                                 silent = false,
-                               }: ProxyOptions): Promise<http.Server> {
+  port,
+  host,
+  targetUrl,
+  apiDocPath,
+  defaultForbidAdditionalProperties = false,
+  silent = false,
+}: ProxyOptions): Promise<http.Server> {
   try {
     const app = await buildApp({
       targetUrl,
@@ -247,8 +258,8 @@ export async function runProxy({
       silent,
     });
     let server: http.Server;
-    return new Promise<http.Server>(resolve => {
-      server = app.listen(port, host, () => {
+    return new Promise<http.Server>((resolve) => {
+      server = app.listen(+port, host, () => {
         resolve(server);
       });
     });
@@ -258,18 +269,22 @@ export async function runProxy({
   }
 }
 
-async function prepareApiDocument(rawApiDoc: any, apiDocPath: string, defaultForbidAdditionalProperties: boolean | undefined): Promise<any> {
+async function prepareApiDocument(
+  rawApiDoc: any,
+  apiDocPath: string,
+  defaultForbidAdditionalProperties: boolean | undefined,
+): Promise<any> {
   const apiDocConv = await convertToOpenApiV3(rawApiDoc, apiDocPath).catch(
-    err => {
+    (err) => {
       throw new Error(`Could not convert document to OpenAPI v3: ${err}`);
     },
   );
 
-  const apiDocDeref = await dereference(apiDocConv, apiDocPath).catch(err => {
+  const apiDocDeref = await dereference(apiDocConv, apiDocPath).catch((err) => {
     throw new Error(`Reference resolution error: ${err}`);
   });
 
-  let apiDoc = await resolve(apiDocDeref, apiDocPath).catch(err => {
+  let apiDoc = await resolve(apiDocDeref, apiDocPath).catch((err) => {
     throw new Error(`Reference resolution error: ${err}`);
   });
 
@@ -284,11 +299,28 @@ async function prepareApiDocument(rawApiDoc: any, apiDocPath: string, defaultFor
     }
 
     // Ensure every operation has a operationId (required by openapi-backend validator, but not by OpenAPI v3 schema). [Issue #4]
-    if (traversalPath.length === 3
-      && traversalPath[0] === 'paths'
-      && ['get', 'put', 'post', 'delete', 'options', 'head', 'patch', 'trace'].includes(traversalPath[2])) {
+    if (
+      traversalPath.length === 3 &&
+      traversalPath[0] === 'paths' &&
+      [
+        'get',
+        'put',
+        'post',
+        'delete',
+        'options',
+        'head',
+        'patch',
+        'trace',
+      ].includes(traversalPath[2])
+    ) {
       if (obj.operationId === undefined) {
-        obj.operationId = 'generatedOperationId_' + traversalPath[1].slice(1) + '_' + traversalPath[2] + '_' + crypto.randomBytes(3).toString('hex');
+        obj.operationId =
+          'generatedOperationId_' +
+          traversalPath[1].slice(1) +
+          '_' +
+          traversalPath[2] +
+          '_' +
+          crypto.randomBytes(3).toString('hex');
       }
     }
 
