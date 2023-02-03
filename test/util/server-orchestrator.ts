@@ -1,5 +1,4 @@
-import { killProxyAndMock } from './process';
-import { PROXY_PORT, TARGET_SERVER_PORT } from '../config';
+import { killNodeProcesses } from './process';
 import {
   BaseProxyOptions,
   ExtendedProxyOptions,
@@ -8,26 +7,30 @@ import {
 } from '../../src/app';
 import {
   BaseMockOptions,
-  ExtendedMockOptions,
   MockOptions,
   runApp as runMockServer,
 } from '@exxeta/openapi-cop-mock-server';
-import { closeServer } from '../../src/util';
 import { Server } from 'http';
 import { URL } from 'url';
+import { ChildProcess } from 'child_process';
+import {
+  closeServer,
+  killDockerProxyServer,
+  spawnDockerProxyServer,
+} from './server';
 
 export enum ServerRole {
   Proxy = 'proxy',
   MockTarget = 'mock',
 }
 
-export abstract class ServerOrchestrator {
+export abstract class ServerOrchestrator<S extends Server | ChildProcess> {
   protected servers: {
-    [ServerRole.Proxy]?: Server;
-    [ServerRole.MockTarget]?: Server;
+    [ServerRole.Proxy]?: S;
+    [ServerRole.MockTarget]?: S;
   } = {};
 
-  constructor(protected proxyUrl: URL, protected targetUrl: URL) {}
+  constructor(public readonly proxyUrl: URL, public readonly targetUrl: URL) {}
 
   get proxyOptions(): BaseProxyOptions {
     return {
@@ -43,37 +46,37 @@ export abstract class ServerOrchestrator {
     };
   }
 
+  get options(): {
+    [ServerRole.Proxy]: BaseProxyOptions;
+    [ServerRole.MockTarget]: BaseMockOptions;
+  } {
+    return {
+      proxy: this.proxyOptions,
+      mock: this.mockOptions,
+    };
+  }
+
   public abstract start(
     server: ServerRole,
     options: ProxyOptions | MockOptions,
-    useExisting?: boolean,
-  ): Promise<Server>;
+  ): Promise<S>;
 
   public abstract stop(server: ServerRole): Promise<void>;
 
   public abstract kill(): Promise<void>;
 
-  public clone(): ServerOrchestrator {
-    return new (this.constructor as typeof NodeHttpServerOrchestrator)(
-      this.proxyUrl,
-      this.targetUrl,
-    );
-  }
-
-  async startAll(
-    proxyOptions: ExtendedProxyOptions,
-  ): Promise<Record<ServerRole, Server>> {
+  async startAll(proxyOptions: ExtendedProxyOptions): Promise<Array<S>> {
     console.log('Starting servers...');
-    return {
-      [ServerRole.Proxy]: await this.start(ServerRole.Proxy, {
+    return Promise.all([
+      this.start(ServerRole.Proxy, {
         ...this.proxyOptions,
         ...proxyOptions,
       }),
-      [ServerRole.MockTarget]: await this.start(ServerRole.MockTarget, {
+      this.start(ServerRole.MockTarget, {
         ...this.mockOptions,
         apiDocFile: proxyOptions?.apiDocPath,
       }),
-    };
+    ]);
   }
 
   async stopAll(): Promise<void> {
@@ -100,7 +103,8 @@ export abstract class ServerOrchestrator {
     task: () => Promise<void>;
     proxyOptions: ExtendedProxyOptions;
   }): Promise<void> {
-    this.servers = await this.startAll(proxyOptions);
+    await this.startAll(proxyOptions);
+    console.log('Started both servers!');
     await task();
     await this.stopAll();
   }
@@ -112,60 +116,37 @@ export abstract class ServerOrchestrator {
     task: () => Promise<void>;
     proxyOptions: ExtendedProxyOptions;
   }): Promise<void> {
-    this.servers[ServerRole.Proxy] = await this.start(ServerRole.Proxy, {
+    await this.start(ServerRole.Proxy, {
       ...this.proxyOptions,
       ...proxyOptions,
     });
     await task();
     await this.stop(ServerRole.Proxy);
   }
-
-  public async withMock({
-    task,
-    mockOptions,
-    useExisting,
-  }: {
-    task: () => Promise<void>;
-    mockOptions: ExtendedMockOptions;
-    useExisting?: boolean;
-  }): Promise<void> {
-    this.servers[ServerRole.MockTarget] = await this.start(
-      ServerRole.MockTarget,
-      {
-        ...this.mockOptions,
-        apiDocFile: mockOptions.apiDocFile,
-      },
-      useExisting,
-    );
-    await task();
-    await this.stop(ServerRole.MockTarget);
-  }
-
-  setMock(server: Server): void {
-    this.servers[ServerRole.MockTarget] = server;
-  }
 }
 
 /**
  * This orchestrator starts Express servers directly on the main process.
  */
-export class NodeHttpServerOrchestrator extends ServerOrchestrator {
+export class NodeHttpServerOrchestrator extends ServerOrchestrator<Server> {
   async start(
     serverRole: ServerRole,
     options: ProxyOptions | MockOptions,
-    useExisting?: boolean,
   ): Promise<Server> {
-    const server = this.servers[serverRole];
-    if (server instanceof Server && useExisting) {
-      return server;
+    switch (serverRole) {
+      case ServerRole.Proxy: {
+        this.servers[serverRole] = await runProxyServer(
+          options as ProxyOptions,
+        );
+        break;
+      }
+      case ServerRole.MockTarget: {
+        this.servers[serverRole] = await runMockServer(options as MockOptions);
+        break;
+      }
     }
 
-    switch (serverRole) {
-      case ServerRole.Proxy:
-        return runProxyServer(options as ProxyOptions);
-      case ServerRole.MockTarget:
-        return runMockServer(options as MockOptions);
-    }
+    return this.servers[serverRole] as Server;
   }
 
   async stop(serverRole: ServerRole): Promise<void> {
@@ -173,29 +154,56 @@ export class NodeHttpServerOrchestrator extends ServerOrchestrator {
     if (!server) {
       return;
     }
-    await closeServer(server);
+    await closeServer(server, this.options[serverRole].port);
   }
 
   kill(): Promise<void> {
-    return killProxyAndMock(PROXY_PORT, TARGET_SERVER_PORT);
+    return killNodeProcesses([this.proxyOptions.port, this.mockOptions.port]);
   }
 }
 
-export class DockerServerOrchestrator extends NodeHttpServerOrchestrator {
+export class DockerServerOrchestrator extends ServerOrchestrator<
+  Server | ChildProcess
+> {
+  private mockServerOrchestrator = new NodeHttpServerOrchestrator(
+    this.proxyUrl,
+    this.targetUrl,
+  );
+
   async start(
     serverRole: ServerRole,
     options: ProxyOptions | MockOptions,
-    useExisting?: boolean,
-  ): Promise<Server> {
-    // TODO
-    return Promise.resolve(null as any);
+  ): Promise<Server | ChildProcess> {
+    if (serverRole === ServerRole.Proxy) {
+      console.log('Starting docker proxy server...');
+      this.servers[serverRole] = await spawnDockerProxyServer(
+        options as ProxyOptions,
+        { detached: true, stdio: 'inherit' },
+        true,
+      );
+      console.log('Spawned docker proxy server!');
+      return this.servers[serverRole] as ChildProcess;
+    } else {
+      this.servers[serverRole] = await this.mockServerOrchestrator.start(
+        ServerRole.MockTarget,
+        options,
+      );
+      return this.servers[serverRole] as Server;
+    }
   }
 
   async stop(serverRole: ServerRole): Promise<void> {
-    // TODO
+    if (serverRole === ServerRole.Proxy) {
+      await killDockerProxyServer(this.proxyOptions);
+    } else {
+      await this.mockServerOrchestrator.stop(ServerRole.MockTarget);
+    }
   }
 
-  kill(): Promise<void> {
-    return killProxyAndMock(PROXY_PORT, TARGET_SERVER_PORT);
+  async kill(): Promise<void> {
+    await Promise.all([
+      killNodeProcesses([this.mockOptions.port]),
+      killDockerProxyServer(this.proxyOptions),
+    ]);
   }
 }

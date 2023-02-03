@@ -14,6 +14,6 @@ export interface TestResponses {
 
 export type TestResponseConfig = Array<{
   request: TestRequest;
-  serverFactory: () => http.Server;
+  serverFactory: (port: number | string) => http.Server;
   expectedError: any;
 }>;

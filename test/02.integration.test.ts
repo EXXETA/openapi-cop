@@ -35,12 +35,14 @@ import {
   ServerOrchestrator,
 } from './util/server-orchestrator';
 import { URL } from 'url';
+import { Server } from 'http';
+import { ChildProcess } from 'child_process';
 
-let serverOrchestrator: ServerOrchestrator;
+let serverOrchestrator: ServerOrchestrator<Server | ChildProcess>;
 if (SERVER_RUNTIME === 'docker') {
   serverOrchestrator = new DockerServerOrchestrator(
-    new URL(`http://localhost:${PROXY_PORT}`),
-    new URL(`http://localhost:${TARGET_SERVER_PORT}`),
+    new URL(`http://0.0.0.0:${PROXY_PORT}`),
+    new URL(`http://0.0.0.0:${TARGET_SERVER_PORT}`),
   );
 } else {
   serverOrchestrator = new NodeHttpServerOrchestrator(
@@ -67,6 +69,7 @@ describe('integration.test.js', function() {
   };
 
   before(function() {
+    console.log('Killing existing processes...');
     return serverOrchestrator.kill();
   });
 
