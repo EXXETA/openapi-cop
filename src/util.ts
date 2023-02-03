@@ -11,6 +11,7 @@ import * as qs from 'qs';
 import { ResponseParsingError } from '../types/errors';
 import { ValidationResults } from '../types/validation';
 import * as rp from 'request-promise-native';
+import { flatMap } from 'lodash';
 
 function isSwaggerV2(apiDoc: any): boolean {
   return apiDoc.swagger === '2.0';
@@ -254,13 +255,15 @@ export interface CliFlags {
  * @param flags
  */
 export function buildCliArguments(flags: Array<CliFlags>): Array<string> {
-  return flags
-    .filter(({ value }) => typeof value === 'string' || value === true)
-    .flatMap(({ flag, value }) => {
-      const args = [flag];
-      if (typeof value === 'string') {
-        args.push(value);
-      }
-      return args;
-    });
+  const effectiveFlags = flags.filter(
+    ({ value }) => typeof value === 'string' || value === true,
+  );
+
+  return flatMap(effectiveFlags, ({ flag, value }) => {
+    const args = [flag];
+    if (typeof value === 'string') {
+      args.push(value);
+    }
+    return args;
+  });
 }

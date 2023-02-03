@@ -1,16 +1,19 @@
 import { exec as _exec } from 'child_process';
 import * as util from 'util';
+import { flatMap } from 'lodash';
 import findProcess = require('find-process');
 
 const exec = util.promisify(_exec);
 
-export async function killNodeProcesses(ports: Array<string | number>): Promise<any> {
+export async function killNodeProcesses(
+  ports: Array<string | number>,
+): Promise<any> {
   const processResults = await Promise.all(
     ports.map((port) => findProcess('port', port)),
   );
   return killProcesses(
-    processResults.flatMap((results) =>
-      results.flatMap((process) =>
+    flatMap(processResults, (results) =>
+      flatMap(results, (process) =>
         process.cmd.includes('node') ? process.pid : [],
       ),
     ),
