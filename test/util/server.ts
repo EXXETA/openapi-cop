@@ -1,6 +1,6 @@
 import { BaseProxyOptions, ProxyOptions } from '../../src/app';
-import { MOCK_SERVER_DIR, SCHEMAS_DIR, TARGET_SERVER_PORT } from '../config';
-import { BaseMockOptions, MockOptions } from '@exxeta/openapi-cop-mock-server';
+import { MOCK_SERVER_DIR, SCHEMAS_DIR } from '../config';
+import { MockOptions } from '@exxeta/openapi-cop-mock-server';
 import { buildCliArguments, CliFlags } from '../../src/util';
 import { ChildProcess, execFile, spawn, SpawnOptions } from 'child_process';
 import * as waitOn from 'wait-on';
@@ -136,7 +136,7 @@ export async function spawnDockerProxyServer(
 
   await waitOn({
     resources: [`tcp:${proxyOptions.host}:${proxyOptions.port}`],
-    timeout: 5000,
+    tcpTimeout: 3000,
   });
 
   return cp;
@@ -178,7 +178,7 @@ export async function withServer({
   task,
 }: {
   serverFactory: (port: number | string) => Server;
-  port: number | string,
+  port: number | string;
   task: () => Promise<void>;
 }): Promise<void> {
   const server = await serverFactory(port);
