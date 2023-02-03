@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { TestResponses } from 'test-request-map';
+import { TestResponses } from '../../types/test-request-map';
 import { responderTo } from '../util/server';
 
 /**

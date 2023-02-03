@@ -1,4 +1,4 @@
-import { TestRequest, TestRequestMap, TestResponses } from 'test-request-map';
+import { TestRequest, TestRequestMap, TestResponses } from '../../types/test-request-map';
 import * as assert from 'assert';
 import { AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios';
 import { ExtendedProxyOptions } from '../../src/app';
