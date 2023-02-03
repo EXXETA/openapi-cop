@@ -45,7 +45,7 @@ jobs:
 
     - if: startsWith(matrix.node-version, '12')
       name: Test Docker image
-      run: npm test:docker
+      run: npm run test:docker
       env:
         DEBUG: openapi-cop:*
         CI: true
