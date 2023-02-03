@@ -8,7 +8,6 @@ import * as yaml from 'js-yaml';
 import { Request as OasRequest } from 'openapi-backend';
 import * as path from 'path';
 import * as qs from 'qs';
-import * as waitOn from 'wait-on';
 import { ResponseParsingError } from '../types/errors';
 import { ValidationResults } from '../types/validation';
 import * as rp from 'request-promise-native';
@@ -207,19 +206,6 @@ export function setSourceRequestHeader(
   oasRequest: OasRequest,
 ): void {
   res.setHeader('openapi-cop-source-request', JSON.stringify(oasRequest));
-}
-
-/** Closes the server and waits until the port is again free. */
-export async function closeServer(server: http.Server): Promise<void> {
-  const port = (server.address() as any).port;
-  await new Promise<void>((resolve, reject) => {
-    server.close((err) => {
-      if (err) return reject(err);
-      resolve();
-    });
-  });
-
-  await waitOn({ resources: [`http://localhost:${port}`], reverse: true });
 }
 
 /**

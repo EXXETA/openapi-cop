@@ -1,0 +1,11 @@
+{
+  "bail": true,
+  "timeout": 60000,
+  "exit": true,
+  "spec": [
+    "build/test/*.test.js"
+  ],
+  "require": [
+    "dotenv/config"
+  ]
+}

@@ -5,6 +5,7 @@ import { ExtendedProxyOptions } from '../../src/app';
 import { getFileName, readDirFilesSync } from './io';
 import * as chalk from 'chalk';
 import { ServerOrchestrator } from './server-orchestrator';
+import { withServer } from './server';
 
 /**
  * Formats a request in a compact way, i.e. METHOD /url {...}
@@ -57,7 +58,7 @@ export function testRequestsForEachApiDoc(options: {
   apiDocDirectory: string;
   testRequestMap: TestRequestMap;
   clients: { proxy: AxiosInstance; target: AxiosInstance };
-  serverOrchestrator: ServerOrchestrator;
+  serverOrchestrator: ServerOrchestrator<any>;
   proxyOptions?: Partial<ExtendedProxyOptions>;
   test: AssertionFunction;
 }): void {
@@ -83,7 +84,7 @@ export function testRequestsForApiDoc({
   apiDocPath: string;
   testRequests: Array<TestRequest>;
   clients: { proxy: AxiosInstance; target: AxiosInstance };
-  serverOrchestrator: ServerOrchestrator;
+  serverOrchestrator: ServerOrchestrator<any>;
   proxyOptions?: Partial<ExtendedProxyOptions>;
   test: AssertionFunction;
 }): void {
@@ -126,7 +127,7 @@ export function testResponsesForEachApiDoc({
   apiDocDirectory: string;
   testResponses: TestResponses;
   client: { proxy: AxiosInstance; target: AxiosInstance };
-  serverOrchestrator: ServerOrchestrator;
+  serverOrchestrator: ServerOrchestrator<any>;
   proxyOptions?: Partial<ExtendedProxyOptions>;
   test: AssertionFunction;
 }): void {
@@ -147,10 +148,9 @@ export function testResponsesForEachApiDoc({
         proxyOptions: { ...proxyOptions, apiDocPath },
         task: async () => {
           for (const { request, serverFactory, expectedError } of testData) {
-            serverOrchestrator.setMock(serverFactory());
-            await serverOrchestrator.withMock({
-              mockOptions: { apiDocFile: apiDocPath },
-              useExisting: true,
+            await withServer({
+              serverFactory,
+              port: serverOrchestrator.targetUrl.port,
               task: async () => {
                 console.log(`Sending request ${formatRequest(request)}`);
                 const targetRes = await client.target(request);

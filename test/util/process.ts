@@ -4,17 +4,17 @@ import findProcess = require('find-process');
 
 const exec = util.promisify(_exec);
 
-export async function killProxyAndMock(
-  proxyPort: number | string,
-  mockServerPort: number | string,
-): Promise<any> {
-  const pid1 = await findProcess('port', proxyPort);
-  const pid2 = await findProcess('port', mockServerPort);
-
-  await killProcesses([
-    ...pid1.filter((p) => p.cmd.indexOf('node') !== -1).map((p) => p.pid),
-    ...pid2.filter((p) => p.cmd.indexOf('node') !== -1).map((p) => p.pid),
-  ]);
+export async function killNodeProcesses(ports: Array<string | number>): Promise<any> {
+  const processResults = await Promise.all(
+    ports.map((port) => findProcess('port', port)),
+  );
+  return killProcesses(
+    processResults.flatMap((results) =>
+      results.flatMap((process) =>
+        process.cmd.includes('node') ? process.pid : [],
+      ),
+    ),
+  );
 }
 
 /** Kills many processes by their PIDs. */

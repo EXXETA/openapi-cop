@@ -22,4 +22,8 @@ if [ -n "$VERBOSE" ]; then
     cli_args="${cli_args}--verbose "
 fi
 
+if [ -n "$CLI_ARGUMENTS" ]; then
+  cli_args="$CLI_ARGUMENTS"
+fi
+
 node src/cli --host 0.0.0.0 $cli_args
