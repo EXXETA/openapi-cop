@@ -1,14 +1,13 @@
-#!/usr/bin/env bash
+#!/bin/bash
 
-read -r -p "Enter node version [10|12]: " userInput
-NODE_VERSION=$(echo $userInput | sed 's/v//g')
-echo "Using node version $NODE_VERSION"
+cliArguments=$1
+schemasDir=$(readlink -f "$(dirname $0)/../schemas")
 
-MSYS_NO_PATHCONV=1
-DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+containerId=$(docker run -d --network="host" \
+  -v "$schemasDir:/schemas" \
+  --env "CLI_ARGUMENTS=$cliArguments" \
+  --env "DEBUG=openapi-cop:*" \
+  --env "CI=true" \
+  lxlu/openapi-cop:test)
 
-docker run --rm -it \
-  -v "$DIR/../..":/data \
-  -v "$DIR/entrypoint.bash":/entrypoint.bash \
-  --user "$(id -u):$(id -g)" \
-  node:$NODE_VERSION bash 'entrypoint.bash'
+echo "Proxy container: ${containerId:0:8}"

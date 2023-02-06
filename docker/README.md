@@ -32,6 +32,7 @@ same [openapi-cop CLI flags](https://github.com/EXXETA/openapi-cop#cli-usage):
   are not allowed.
 - `SILENT`: When set, the proxy will forward response bodies unchanged and only set validation headers.
 - `VERBOSE`: When set, activates verbose output.
+- `CLI_ARGUMENTS`: Sets all the arguments at once and overrides any other option given.
 - `NODE_ENV` (default: "production"): When set to "development", stack traces will also be logged.
 
 ### Example

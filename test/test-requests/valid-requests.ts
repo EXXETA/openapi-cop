@@ -2,9 +2,9 @@
  * NOTE: To enable tests for a specific OpenAPI file, add the file name
  * as a key of the object and add at least one `TestRequestConfig` to the array.
  */
-import {TestRequests} from '../../types/test-requests';
+import {TestRequestMap} from '../../types/test-request-map';
 
-export const VALID_TEST_REQUESTS: { [dir: string]: TestRequests } = {
+export const VALID_TEST_REQUESTS: { [dir: string]: TestRequestMap } = {
   v3: {
     '2-path.yaml': [
       {
@@ -49,7 +49,7 @@ export const VALID_TEST_REQUESTS: { [dir: string]: TestRequests } = {
   },
 };
 
-export const STRICTLY_VALID_TEST_REQUESTS: { [dir: string]: TestRequests } = {
+export const STRICTLY_VALID_TEST_REQUESTS: { [dir: string]: TestRequestMap } = {
   v3: {
     '3-parameters.yaml': [
       {

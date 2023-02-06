@@ -1,44 +1,40 @@
-import {runProxy as runProxyApp} from '../../src/app';
-import {MOCK_SERVER_DIR, PROXY_PORT, TARGET_SERVER_PORT} from '../config';
-import {runApp as runMockApp} from '@exxeta/openapi-cop-mock-server';
-import {closeServer} from '../../src/util';
-import {ChildProcess, spawn} from 'child_process';
+import { BaseProxyOptions, ProxyOptions } from '../../src/app';
+import { MOCK_SERVER_DIR, SCHEMAS_DIR } from '../config';
+import { MockOptions } from '@exxeta/openapi-cop-mock-server';
+import { buildCliArguments, CliFlags } from '../../src/util';
+import { ChildProcess, execFile, spawn, SpawnOptions } from 'child_process';
 import * as waitOn from 'wait-on';
 import debug from 'debug';
+import * as path from 'path';
+import * as http from 'http';
+import { Server } from 'http';
+import * as express from 'express';
 
-/**
- * Executes a function within the context of a proxy and a mock server.
- * Resources are created before execution and cleaned up thereafter.
- */
-export async function withServers({
-                                    apiDocPath,
-                                    callback,
-                                    defaultForbidAdditionalProperties,
-                                    silent,
-                                  }: {
-  apiDocPath: string;
-  callback: () => Promise<void>;
-  defaultForbidAdditionalProperties: boolean;
-  silent: boolean;
-}): Promise<void> {
-  console.log('Starting servers...');
-  const servers = {
-    proxy: await runProxyApp({
-      port: PROXY_PORT,
-      host: 'localhost',
-      targetUrl: `http://localhost:${TARGET_SERVER_PORT}`,
-      apiDocPath,
-      defaultForbidAdditionalProperties,
-      silent,
-    }),
-    mock: await runMockApp(TARGET_SERVER_PORT, apiDocPath),
-  };
+function toProxyCliOptions(proxyOptions: ProxyOptions, isVerbose = false) {
+  const args: Array<CliFlags> = [
+    { flag: '--host', value: proxyOptions.host },
+    { flag: '--port', value: proxyOptions.port.toString() },
+    { flag: '--target', value: proxyOptions.targetUrl },
+    { flag: '--file', value: proxyOptions.apiDocPath },
+    {
+      flag: '--default-forbid-additional-properties',
+      value: proxyOptions.defaultForbidAdditionalProperties,
+    },
+    { flag: '--silent', value: proxyOptions.silent },
+    { flag: '--verbose', value: isVerbose },
+  ];
 
-  console.log('Running test...');
-  await callback();
+  return buildCliArguments(args);
+}
 
-  console.log('Shutting down servers...');
-  await Promise.all([closeServer(servers.proxy), closeServer(servers.mock)]);
+function toMockCliOptions(mockOptions: MockOptions, isVerbose = false) {
+  const args: Array<CliFlags> = [
+    { flag: '--port', value: mockOptions.port.toString() },
+    { flag: '--file', value: mockOptions.apiDocFile },
+    { flag: '--verbose', value: isVerbose },
+  ];
+
+  return buildCliArguments(args);
 }
 
 /**
@@ -48,28 +44,25 @@ export async function withServers({
  * The `options` can be used to override the `child_process.spawn` options.
  */
 export async function spawnProxyServer(
-  proxyPort: number,
-  targetPort: number,
-  apiDocFile: string,
-  options: any = {},
-): Promise<ChildProcess> {
+  proxyOptions: ProxyOptions,
   // NOTE: for debugging use the options {detached: true, stdio: 'inherit'}
+  spawnOptions: SpawnOptions = {},
+  isVerbose = false,
+): Promise<ChildProcess> {
   const cp = spawn(
     'node',
-    [
-      '../../src/cli.js',
-      '--port',
-      proxyPort.toString(),
-      '--target',
-      `http://localhost:${targetPort}`,
-      '--file',
-      apiDocFile,
-      '--verbose',
-    ],
-    {cwd: __dirname, stdio: 'pipe', detached: false, ...options},
+    ['../../src/cli.js', ...toProxyCliOptions(proxyOptions, isVerbose)],
+    {
+      cwd: __dirname,
+      stdio: 'pipe',
+      detached: false,
+      ...spawnOptions,
+    },
   );
 
-  await waitOn({resources: [`tcp:localhost:${proxyPort}`]});
+  await waitOn({
+    resources: [`tcp:${proxyOptions.host}:${proxyOptions.port}`],
+  });
 
   return cp;
 }
@@ -81,30 +74,23 @@ export async function spawnProxyServer(
  * The `options` can be used to override the `child_process.spawn` options.
  */
 export async function spawnMockServer(
-  port: number,
-  apiDocFile: string,
-  options: any = {},
-): Promise<ChildProcess> {
+  mockOptions: MockOptions,
   // NOTE: for debugging use the options {detached: true, stdio: 'inherit'}
+  spawnOptions: SpawnOptions = {},
+  isVerbose = false,
+): Promise<ChildProcess> {
   const cp = spawn(
     'node',
-    [
-      './build/src/cli.js',
-      '--port',
-      port.toString(),
-      '--file',
-      apiDocFile,
-      '--verbose',
-    ],
+    ['./build/src/cli.js', ...toMockCliOptions(mockOptions, isVerbose)],
     {
       cwd: MOCK_SERVER_DIR,
       stdio: debug.enabled('openapi-cop:mock') ? 'inherit' : 'ignore',
       detached: false,
-      ...options,
+      ...spawnOptions,
     },
   );
 
-  await waitOn({resources: [`tcp:localhost:${port}`]});
+  await waitOn({ resources: [`tcp:${mockOptions.port}`] });
 
   return cp;
 }
@@ -113,13 +99,106 @@ export async function spawnMockServer(
  * Convenience function to spawn a proxy server along a mock server.
  */
 export async function spawnProxyWithMockServer(
-  proxyPort: number,
-  targetPort: number,
-  apiDocFile: string,
-  options: any = {},
-): Promise<{ proxy: ChildProcess; target: ChildProcess; }> {
+  proxyOptions: ProxyOptions,
+  mockOptions: MockOptions,
+  spawnOptions: SpawnOptions = {},
+): Promise<{ proxy: ChildProcess; target: ChildProcess }> {
   return {
-    proxy: await spawnProxyServer(proxyPort, targetPort, apiDocFile, options),
-    target: await spawnMockServer(targetPort, apiDocFile, options),
+    proxy: await spawnProxyServer(proxyOptions, spawnOptions),
+    target: await spawnMockServer(mockOptions, spawnOptions),
   };
+}
+
+export async function spawnDockerProxyServer(
+  proxyOptions: ProxyOptions,
+  // NOTE: for debugging use the options {detached: true, stdio: 'inherit'}
+  spawnOptions: SpawnOptions = {},
+  isVerbose = false,
+): Promise<ChildProcess> {
+  const dockerProxyOptions = {
+    ...proxyOptions,
+    apiDocPath: path.join(
+      '/schemas',
+      path.relative(SCHEMAS_DIR, proxyOptions.apiDocPath),
+    ),
+  };
+
+  const cp = spawn(
+    'test/docker/run-docker-test.bash',
+    [toProxyCliOptions(dockerProxyOptions, isVerbose).join(' ')],
+    {
+      cwd: process.env.PWD,
+      stdio: 'pipe',
+      detached: false,
+      ...spawnOptions,
+    },
+  );
+
+  await waitOn({
+    resources: [`tcp:${proxyOptions.host}:${proxyOptions.port}`],
+    tcpTimeout: 3000,
+  });
+
+  return cp;
+}
+
+export async function killDockerProxyServer(
+  proxyOptions: BaseProxyOptions,
+): Promise<ChildProcess> {
+  const cp = execFile('test/docker/kill-docker-test.bash', {
+    cwd: process.env.PWD,
+  });
+
+  await waitOn({
+    resources: [`tcp:${proxyOptions.host}:${proxyOptions.port}`],
+    reverse: true,
+  });
+
+  return cp;
+}
+
+/**
+ * Utility function to create a server that responds to only one given path/method.
+ */
+export function responderTo(
+  method: string,
+  path: string,
+  routeHandler: express.RequestHandler,
+): (port: number | string) => http.Server {
+  return (port: number | string) => {
+    const app: express.Application = express();
+    ((app as any)[method] as express.IRouterMatcher<any>)(path, routeHandler);
+    return app.listen(port);
+  };
+}
+
+export async function withServer({
+  serverFactory,
+  port,
+  task,
+}: {
+  serverFactory: (port: number | string) => Server;
+  port: number | string;
+  task: () => Promise<void>;
+}): Promise<void> {
+  const server = await serverFactory(port);
+  await task();
+  await closeServer(server, port);
+}
+
+/** Closes the server and waits until the port is again free. */
+export async function closeServer(
+  server: http.Server,
+  port: number | string,
+): Promise<void> {
+  if (server.address()) {
+    await new Promise<void>((resolve, reject) => {
+      server.close((err) => {
+        if (err) return reject(err);
+        resolve();
+      });
+    });
+  }
+
+  await waitOn({ resources: [`tcp:${port}`], reverse: true });
 }

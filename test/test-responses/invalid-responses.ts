@@ -1,23 +1,6 @@
-import * as express from 'express';
-import {Request, Response} from 'express';
-
-import {TARGET_SERVER_PORT} from '../config';
-import {TestResponses} from '../../types/test-requests';
-
-/**
- * Utility function to create a server that responds to only one given path/method.
- */
-function responderTo(
-  method: string,
-  path: string,
-  routeHandler: express.RequestHandler,
-) {
-  return async () => {
-    const app: express.Application = express();
-    ((app as any)[method] as express.IRouterMatcher<any>)(path, routeHandler);
-    return app.listen(TARGET_SERVER_PORT);
-  };
-}
+import { Request, Response } from 'express';
+import { TestResponses } from '../../types/test-request-map';
+import { responderTo } from '../util/server';
 
 /**
  * For every OpenAPI file path, an HTTP server is provided along with valid
@@ -35,18 +18,18 @@ export const INVALID_RESPONSES: {
         request: {
           method: 'POST',
           url: '/echo',
-          data: JSON.stringify({input: 'ECHO!'}),
+          data: JSON.stringify({ input: 'ECHO!' }),
         },
-        runServer: responderTo(
+        serverFactory: responderTo(
           'post',
           '/echo',
           (_req: Request, res: Response) => {
-            res.status(200).json({itseMe: 'Mario!'});
+            res.status(200).json({ itseMe: 'Mario!' });
           },
         ),
         expectedError: {
           keyword: 'required',
-          params: {missingProperty: 'output'},
+          params: { missingProperty: 'output' },
         },
       },
     ],
@@ -58,16 +41,16 @@ export const INVALID_RESPONSES: {
         request: {
           method: 'POST',
           url: '/echo',
-          data: JSON.stringify({input: 'ECHO!'}),
+          data: JSON.stringify({ input: 'ECHO!' }),
         },
-        runServer: responderTo(
+        serverFactory: responderTo(
           'post',
           '/echo',
           (_req: Request, res: Response) => {
-            res.status(400).json({error: {name: 666, message: 42}});
+            res.status(400).json({ error: { name: 666, message: 42 } });
           },
         ),
-        expectedError: {keyword: 'type'},
+        expectedError: { keyword: 'type' },
       },
     ],
     '5-external-refs.yaml': [
@@ -75,29 +58,29 @@ export const INVALID_RESPONSES: {
         request: {
           method: 'POST',
           url: '/echo',
-          data: JSON.stringify({input: 'ECHO!'}),
+          data: JSON.stringify({ input: 'ECHO!' }),
         },
-        runServer: responderTo(
+        serverFactory: responderTo(
           'post',
           '/echo',
           (_req: Request, res: Response) => {
-            res.status(400).json({error: {name: 666, message: 42}});
+            res.status(400).json({ error: { name: 666, message: 42 } });
           },
         ),
-        expectedError: {keyword: 'type'},
+        expectedError: { keyword: 'type' },
       },
     ],
     '6-examples.yaml': [
       {
-        request: {method: 'GET', url: '/pets'},
-        runServer: responderTo(
+        request: { method: 'GET', url: '/pets' },
+        serverFactory: responderTo(
           'get',
           '/pets',
           (_req: Request, res: Response) => {
-            res.status(200).json([{id: 12, name: 'Figaro'}, 'rofl', 'lol']);
+            res.status(200).json([{ id: 12, name: 'Figaro' }, 'rofl', 'lol']);
           },
         ),
-        expectedError: {keyword: 'type', message: 'should be object'},
+        expectedError: { keyword: 'type', message: 'should be object' },
       },
     ],
     '7-petstore.yaml': [
@@ -118,18 +101,18 @@ export const STRICTLY_INVALID_RESPONSES: {
         request: {
           method: 'POST',
           url: '/echo',
-          data: JSON.stringify({input: 'ECHO!'}),
+          data: JSON.stringify({ input: 'ECHO!' }),
         },
-        runServer: responderTo(
+        serverFactory: responderTo(
           'post',
           '/echo',
           (_req: Request, res: Response) => {
             res
               .status(200)
-              .json({output: 'The cake is a lie', forrest: 'Gump'});
+              .json({ output: 'The cake is a lie', forrest: 'Gump' });
           },
         ),
-        expectedError: {keyword: 'additionalProperties'},
+        expectedError: { keyword: 'additionalProperties' },
       },
     ],
   },

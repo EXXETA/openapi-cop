@@ -139,8 +139,6 @@ export async function runApp({ port, apiDocFile }: MockOptions): Promise<http.Se
 			server = app.listen(port, () => {
 				resolve(server);
 			});
-		}).then(() => {
-			return server;
 		});
 	} catch (error) {
 		console.error('Failed to run mock server', error);

@@ -8,10 +8,10 @@ import * as yaml from 'js-yaml';
 import { Request as OasRequest } from 'openapi-backend';
 import * as path from 'path';
 import * as qs from 'qs';
-import * as waitOn from 'wait-on';
 import { ResponseParsingError } from '../types/errors';
 import { ValidationResults } from '../types/validation';
 import * as rp from 'request-promise-native';
+import { flatMap } from 'lodash';
 
 function isSwaggerV2(apiDoc: any): boolean {
   return apiDoc.swagger === '2.0';
@@ -65,7 +65,7 @@ export function readFileSync(filePath: string): any {
 }
 
 export async function fetchAndReadFile(uri: string): Promise<any> {
-  return rp(uri).then(responseBody => parseJsonOrYaml(uri, responseBody));
+  return rp(uri).then((responseBody) => parseJsonOrYaml(uri, responseBody));
 }
 
 /**
@@ -209,19 +209,6 @@ export function setSourceRequestHeader(
   res.setHeader('openapi-cop-source-request', JSON.stringify(oasRequest));
 }
 
-/** Closes the server and waits until the port is again free. */
-export async function closeServer(server: http.Server): Promise<void> {
-  const port = (server.address() as any).port;
-  await new Promise<void>((resolve, reject) => {
-    server.close(err => {
-      if (err) return reject(err);
-      resolve();
-    });
-  });
-
-  await waitOn({ resources: [`http://localhost:${port}`], reverse: true });
-}
-
 /**
  * Recursively maps a nested object (JSON) given a mapping function. Maps in
  * depth-first order. If it finds an array it applies the mapping function
@@ -231,7 +218,11 @@ export async function closeServer(server: http.Server): Promise<void> {
  * @param fn Mapping function that returns the new value.
  * @param traversalPath internal parameter used to track the current traversal path
  */
-export function mapWalkObject(obj: any, fn: (currentObj: any, traversalPath: Array<string>) => any, traversalPath: Array<string> = []): any {
+export function mapWalkObject(
+  obj: any,
+  fn: (currentObj: any, traversalPath: Array<string>) => any,
+  traversalPath: Array<string> = [],
+): any {
   let objCopy = Object.assign({}, obj);
   for (const key in obj) {
     if (!Object.prototype.hasOwnProperty.call(obj, key)) continue;
@@ -250,4 +241,29 @@ export function mapWalkObject(obj: any, fn: (currentObj: any, traversalPath: Arr
   }
   objCopy = fn(objCopy, traversalPath);
   return objCopy;
+}
+
+export interface CliFlags {
+  flag: string;
+  value?: string | boolean;
+}
+
+/**
+ * Receives a list of optional CLI flags and maps them to a list of strings.
+ * Flags are not included if their value is not a string or equal to `true` (boolean flag).
+ *
+ * @param flags
+ */
+export function buildCliArguments(flags: Array<CliFlags>): Array<string> {
+  const effectiveFlags = flags.filter(
+    ({ value }) => typeof value === 'string' || value === true,
+  );
+
+  return flatMap(effectiveFlags, ({ flag, value }) => {
+    const args = [flag];
+    if (typeof value === 'string') {
+      args.push(value);
+    }
+    return args;
+  });
 }

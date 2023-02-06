@@ -34,8 +34,9 @@
     "dev-start": "npm run compile && node build/src/cli --port 8888 --target \"http://localhost:8889\" --file",
     "dev-start-along-mock": "(export DEBUG=openapi-cop:* || set DEBUG=openapi-cop:*) && npm run compile && node build/test/scripts/spawn",
     "pretest": "npm run compile",
-    "test": "mocha --bail --timeout 60000 --exit build/test/*.test.js",
-    "test:docker": "bash ./test/docker/run-docker-test.bash",
+    "pretest:docker": "npm run pretest && bash ./test/docker/build-docker-test.bash",
+    "test": "DOTENV_CONFIG_PATH=./test/config.env mocha",
+    "test:docker": "DOTENV_CONFIG_PATH=./test/docker/config.env mocha --timeout 120000",
     "test:deps": "npx depcheck --ignores=\"@types/*\"",
     "posttest": "npm run check",
     "package": "npx yarn pack --filename openapi-cop.tgz"
@@ -80,11 +81,12 @@
     "@typescript-eslint/parser": "5.41.0",
     "axios": "0.19.2",
     "chai": "4.3.6",
+    "dotenv": "^16.0.3",
     "eslint": "7.32.0",
     "find-process": "1.4.7",
     "gts": "3.1.1",
     "mocha": "9.2.2",
-    "@exxeta/openapi-cop-mock-server": "1.0.1",
-    "typescript": "4.0.5"
+    "@exxeta/openapi-cop-mock-server": "1.1.0",
+    "typescript": "4.8.4"
   }
 }

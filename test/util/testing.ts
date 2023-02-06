@@ -1,14 +1,11 @@
-import {TestRequestConfig, TestRequests, TestResponses} from '../../types/test-requests';
+import { TestRequest, TestRequestMap, TestResponses } from '../../types/test-request-map';
 import * as assert from 'assert';
-import {AxiosInstance, AxiosRequestConfig, AxiosResponse} from 'axios';
-import * as path from 'path';
-
-import {PROXY_PORT, TARGET_SERVER_PORT} from '../config';
-import {runProxy as runProxyApp} from '../../src/app';
-import {closeServer} from '../../src/util';
-import {readDirFilesSync} from './io';
-import {withServers} from './server';
+import { AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios';
+import { ExtendedProxyOptions } from '../../src/app';
+import { getFileName, readDirFilesSync } from './io';
 import * as chalk from 'chalk';
+import { ServerOrchestrator } from './server-orchestrator';
+import { withServer } from './server';
 
 /**
  * Formats a request in a compact way, i.e. METHOD /url {...}
@@ -26,8 +23,13 @@ export function formatRequest(req: AxiosRequestConfig): string {
   }
 }
 
-export async function assertThrowsAsync(fn: () => Promise<void>, regExp: RegExp): Promise<void> {
-  let f = () => { return };
+export async function assertThrowsAsync(
+  fn: () => Promise<void>,
+  regExp: RegExp,
+): Promise<void> {
+  let f = () => {
+    return;
+  };
   try {
     await fn();
   } catch (e) {
@@ -39,98 +41,101 @@ export async function assertThrowsAsync(fn: () => Promise<void>, regExp: RegExp)
   }
 }
 
+export type AssertionFunction = (
+  proxyResponse: AxiosResponse,
+  targetResponse: AxiosResponse,
+  fileName: string,
+  expectedError: any,
+) => void;
+
 /**
  * For each OpenAPI file in a given directory, it boots a proxy and a mock
  * server and runs the provided test requests. It then executes the callback
  * function that contains the test code.
  */
-export function testRequestForEachFile({
-  testTitle,
-  dir,
-  testRequests,
-  client,
-  callback,
-  defaultForbidAdditionalProperties = false,
-  silent = false,
-}: {
+export function testRequestsForEachApiDoc(options: {
   testTitle: string;
-  dir: string;
-  testRequests: TestRequests;
-  client: { proxy: AxiosInstance; target: AxiosInstance };
-  callback: (
-    proxyRes: AxiosResponse,
-    targetRes: AxiosResponse,
-    fileName: string,
-    requestObject: TestRequestConfig,
-  ) => void;
-  defaultForbidAdditionalProperties?: boolean;
-  silent?: boolean;
+  apiDocDirectory: string;
+  testRequestMap: TestRequestMap;
+  clients: { proxy: AxiosInstance; target: AxiosInstance };
+  serverOrchestrator: ServerOrchestrator<any>;
+  proxyOptions?: Partial<ExtendedProxyOptions>;
+  test: AssertionFunction;
 }): void {
-  // tslint:disable:only-arrow-functions
-  for (const p of readDirFilesSync(dir)) {
-    const fileName = path.normalize(path.basename(p)).replace(/\\/g, '/');
-    it(`${testTitle}: ${fileName}`, async function() {
-      // Skip if no test requests exist for the OpenAPI definition
-      if (!(fileName in testRequests)) {
-        console.log(
-          chalk.keyword('orange')(
-            `Skipping '${fileName}' due to missing test requests.`,
-          ),
-        );
-        return;
-      }
-
-      await withServers({
-        apiDocPath: p,
-        defaultForbidAdditionalProperties,
-        silent,
-        async callback() {
-          // Perform all test requests on both servers yield responses
-          // to compare
-          for (const req of testRequests[fileName]) {
-            console.log(`Sending request ${formatRequest(req)}`);
-            const targetRes = await client.target(req);
-            const proxyRes = await client.proxy(req);
-            callback(proxyRes, targetRes, fileName, req);
-          }
-        },
-      });
+  for (const apiDocPath of readDirFilesSync(options.apiDocDirectory)) {
+    testRequestsForApiDoc({
+      ...options,
+      apiDocPath,
+      testRequests: options.testRequestMap[getFileName(apiDocPath)] ?? [],
     });
   }
 }
 
-/**
- * For each OpenAPI file in a given directory, it boots a proxy server, along
- * with a test target server and runs the provided test requests. It then
- * executes the callback function that contains the test code.
- */
-export function testRequestForEachFileWithServers({
+export function testRequestsForApiDoc({
   testTitle,
-  dir,
-  testServers,
-  client,
-  callback,
-  defaultForbidAdditionalProperties = false,
+  apiDocPath,
+  testRequests,
+  clients,
+  serverOrchestrator,
+  proxyOptions,
+  test,
 }: {
   testTitle: string;
-  dir: string;
-  testServers: TestResponses;
-  client: { proxy: AxiosInstance; target: AxiosInstance };
-  defaultForbidAdditionalProperties?: boolean;
-  callback: (
-    proxyRes: AxiosResponse,
-    targetRes: AxiosResponse,
-    fileName: string,
-    expectedError: any,
-  ) => void;
+  apiDocPath: string;
+  testRequests: Array<TestRequest>;
+  clients: { proxy: AxiosInstance; target: AxiosInstance };
+  serverOrchestrator: ServerOrchestrator<any>;
+  proxyOptions?: Partial<ExtendedProxyOptions>;
+  test: AssertionFunction;
 }): void {
-  // tslint:disable:only-arrow-functions
-  for (const apiDocFile of readDirFilesSync(dir)) {
-    const fileName = path
-      .normalize(path.basename(apiDocFile))
-      .replace(/\\/g, '/');
-    it(`${testTitle}: ${fileName}`, async function() {
-      if (!(fileName in testServers)) {
+  const fileName = getFileName(apiDocPath);
+  it(`${testTitle}: ${fileName}`, async function () {
+    // Skip if no test requests exist for the OpenAPI definition
+    if (testRequests.length === 0) {
+      console.log(
+        chalk.keyword('orange')(
+          `Skipping '${fileName}' due to missing test requests.`,
+        ),
+      );
+      return;
+    }
+
+    await serverOrchestrator.withServers({
+      proxyOptions: { ...proxyOptions, apiDocPath },
+      task: async () => {
+        for (const request of testRequests) {
+          console.log(`Sending request ${formatRequest(request)}`);
+          const targetResponse = await clients.target(request);
+          const proxyResponse = await clients.proxy(request);
+          test(proxyResponse, targetResponse, fileName, request.expectedError);
+        }
+      },
+    });
+  });
+}
+
+export function testResponsesForEachApiDoc({
+  testTitle,
+  apiDocDirectory,
+  testResponses,
+  client,
+  serverOrchestrator,
+  proxyOptions,
+  test,
+}: {
+  testTitle: string;
+  apiDocDirectory: string;
+  testResponses: TestResponses;
+  client: { proxy: AxiosInstance; target: AxiosInstance };
+  serverOrchestrator: ServerOrchestrator<any>;
+  proxyOptions?: Partial<ExtendedProxyOptions>;
+  test: AssertionFunction;
+}): void {
+  for (const apiDocPath of readDirFilesSync(apiDocDirectory)) {
+    const fileName = getFileName(apiDocPath);
+    it(`${testTitle}: ${fileName}`, async function () {
+      const testData = testResponses[fileName];
+      if (!testData?.length) {
         console.log(
           chalk.keyword('orange')(
             `Skipping '${fileName}' due to missing test responses.`,
@@ -139,40 +144,23 @@ export function testRequestForEachFileWithServers({
         return;
       }
 
-      if (testServers[fileName].length === 0) {
-        // When no tests are present in the array, this is interpreted as an
-        // intentional skip
-        return;
-      }
-
-      console.log('Starting proxy server...');
-      const proxyServer = await runProxyApp({
-        port: PROXY_PORT,
-        host: 'localhost',
-        targetUrl: `http://localhost:${TARGET_SERVER_PORT}`,
-        apiDocPath: apiDocFile,
-        defaultForbidAdditionalProperties,
+      await serverOrchestrator.withProxy({
+        proxyOptions: { ...proxyOptions, apiDocPath },
+        task: async () => {
+          for (const { request, serverFactory, expectedError } of testData) {
+            await withServer({
+              serverFactory,
+              port: serverOrchestrator.targetUrl.port,
+              task: async () => {
+                console.log(`Sending request ${formatRequest(request)}`);
+                const targetRes = await client.target(request);
+                const proxyRes = await client.proxy(request);
+                test(proxyRes, targetRes, apiDocPath, expectedError);
+              },
+            });
+          }
+        },
       });
-
-      console.log('Running test...');
-      for (const { request, runServer, expectedError } of testServers[
-        fileName
-      ]) {
-        console.log('Starting some mock server...');
-        const mockServer = await runServer();
-
-        console.log(`Sending request ${formatRequest(request)}`);
-        const targetRes = await client.target(request);
-        const proxyRes = await client.proxy(request);
-
-        callback(proxyRes, targetRes, fileName, expectedError);
-
-        console.log('Shutting down mock server...');
-        await closeServer(mockServer);
-      }
-
-      console.log('Shutting down proxy server...');
-      await closeServer(proxyServer);
     });
   }
 }
