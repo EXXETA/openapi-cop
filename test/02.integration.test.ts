@@ -68,9 +68,11 @@ describe('integration.test.js', function() {
     }),
   };
 
-  before(function() {
-    console.log('Killing existing processes...');
-    return serverOrchestrator.kill();
+  before(async function() {
+    if (process.env.CI?.toLowerCase() !== 'true') {
+      console.log('Killing existing processes...');
+      return serverOrchestrator.kill();
+    }
   });
 
   describe('OpenAPI v3', function() {
