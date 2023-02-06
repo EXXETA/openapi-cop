@@ -36,7 +36,7 @@
     "pretest": "npm run compile",
     "pretest:docker": "npm run pretest && bash ./test/docker/build-docker-test.bash",
     "test": "DOTENV_CONFIG_PATH=./test/config.env mocha",
-    "test:docker": "DOTENV_CONFIG_PATH=./test/docker/config.env mocha --timeout 300000",
+    "test:docker": "DOTENV_CONFIG_PATH=./test/docker/config.env mocha --timeout 120000",
     "test:deps": "npx depcheck --ignores=\"@types/*\"",
     "posttest": "npm run check",
     "package": "npx yarn pack --filename openapi-cop.tgz"
